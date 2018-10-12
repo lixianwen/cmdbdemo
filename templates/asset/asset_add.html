@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block content %}
+{% include "sidebar.html" %}
+<div class="content-page">
+    <!-- Start content -->
+    <div class="content">
+        <div id="form-item-addasset" class="container">
+            <h3>填写主机的基本信息</h3>
+            <form method="post" action="" class="form-horizontal" role="form">
+                {% csrf_token %}
+                {% include "forms.html" %}
+                <button type="submit" class="btn btn-primary">提交</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/waves.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'js/jquery.core.js' %}"></script>
+<script src="{% static 'js/jquery.app.js' %}"></script>
+{% endblock %}

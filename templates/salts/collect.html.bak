@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block content %}
+<a href="{% url 'add' %}">添加资产</a>
+<div class="">
+         <p>saltstack 客户端</p>
+         <select id="aname"  onchange="submit();">
+                <option value="">saltstack 客户端</option>
+                {% for asset in asset_list %}
+                    <option value="{{ asset.id }}">{{ asset.ip }}; {{ asset.other_ip }}</option>
+                {% endfor %}
+        </select>
+</div>
+<p>执行收集<p>
+<!-- 这一段应该用js来写 -->
+[root@web salt]# salt --out=json 192.168.0.126 grains.item ipv4
+{
+    "192.168.0.126": {
+        "ipv4": [
+            "127.0.0.1", 
+            "192.168.0.126"
+        ]
+    }
+}
+[root@web salt]# salt --out=json 192.168.0.126 grains.item num_cpus
+{
+    "192.168.0.126": {
+        "num_cpus": 4
+    }
+}
+[root@web salt]# salt --out=json 192.168.0.126 grains.item mem_total
+{
+    "192.168.0.126": {
+        "mem_total": 220
+    }
+}
+[root@web salt]# salt --out=json 192.168.0.126 grains.item oscodename
+{
+    "192.168.0.126": {
+        "oscodename": "CentOS Linux 7 (Core)"
+    }
+}
+[root@web salt]# salt --out=json 192.168.0.126 disk.usage
+{
+    "192.168.0.126": {
+        "/dev": {
+            "available": "103140", 
+            "1K-blocks": "103140", 
+            "used": "0", 
+            "capacity": "0%", 
+            "filesystem": "devtmpfs"
+        }, 
+        "/sys/fs/cgroup": {
+            "available": "112800", 
+            "1K-blocks": "112800", 
+            "used": "0", 
+            "capacity": "0%", 
+            "filesystem": "tmpfs"
+        }, 
+        "/": {
+            "available": "15870520", 
+            "1K-blocks": "18446032", 
+            "used": "1615464", 
+            "capacity": "10%", 
+            "filesystem": "/dev/sda1"
+        }, 
+        "/run": {
+            "available": "108068", 
+            "1K-blocks": "112800", 
+            "used": "4732", 
+            "capacity": "5%", 
+            "filesystem": "tmpfs"
+        }, 
+        "/run/user/0": {
+            "available": "22560", 
+            "1K-blocks": "22560", 
+            "used": "0", 
+            "capacity": "0%", 
+            "filesystem": "tmpfs"
+        }, 
+        "/dev/shm": {
+            "available": "112788", 
+            "1K-blocks": "112800", 
+            "used": "12", 
+            "capacity": "1%", 
+            "filesystem": "tmpfs"
+        }
+    }
+}
+{% endblock %}

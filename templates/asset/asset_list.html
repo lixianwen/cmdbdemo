@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% load static %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block head %}
+<script>
+    $(function () {
+        $("a.delete").click(function (e) {
+            var action = confirm("确认删除？");
+            if (action == false) {
+                e.preventDefault()
+            }
+        })
+    })
+</script>
+{% endblock %}
+{% block content %}
+{% include "sidebar.html" %}
+<div class="content-page">
+    <!-- Start content -->
+    <div class="content">
+        <div class="panel-group" id="tip">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <a href="#tips" data-toggle="collapse" data-parent="#tip">
+                            查看提示
+                        </a>
+                    </h3>
+                </div>
+                <div id="tips" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <p class="tip"><span>有选择下拉菜单的情况下暂时不提供分页功能</span></p>
+                        <p class="tip"><span>搜索结果暂时不考虑加入分页功能</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <select id="aname"  onchange="submit();">
+                <option value="">机房</option>
+                {% for idc in idc_list %}
+                    <option value="{{ idc.id }}">{{ idc.name }}</option>
+                {% endfor %}
+        </select>
+        <select id="atype"  onchange="submit();">
+                <option value="">资产类型</option>
+                <option value="1">虚拟机</option>
+                <option value="2">路由器</option>
+                <option value="3">交换机</option>
+                <option value="4">其他</option>
+        </select>
+        <select id="host" onchange="submit();">
+                <option value="">宿主机</option>
+                {% for ps in ps_list %}
+                    <option value="{{ ps.id }}">{{ ps.ip }}</option>
+                {% endfor %}
+        </select>
+        <select id="env"  onchange="submit();">
+                <option value="">系统环境</option>
+                <option value="1">生产环境</option>
+                <option value="2">测试环境</option>
+        </select>
+        <select id="status"  onchange="submit();">
+                <option value="">资产状态</option>
+                <option value="1">已使用</option>
+                <option value="2">未使用</option>
+                <option value="3">待回收</option>
+        </select>
+
+        <div class="search">
+            <form action="" method="post">
+                {% csrf_token %}
+                <label>
+                    <input type="search" name="keyword">
+                </label>
+                <button type="submit">搜索</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <caption>主机详细信息列表</caption>
+                <thead>
+                    <tr>
+                        <th>电信IP</th>
+                        <th>联通IP</th>
+                        <th>机房</th>
+                        <th>主机名</th>
+                        <th>CPU</th>
+                        <th>内存(GB)</th>
+                        <th>硬盘(GB)</th>
+                        <th>操作系统</th>
+                        <th>机器状态</th>
+                        <th>主机类型</th>
+                        <th>运行环境</th>
+                        <th>宿主机</th>
+                        <th>备注</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                {% for asset in asset_list %}
+                    <tr>
+                        <td>{{ asset.ip }}</td>
+                        <td>{{ asset.other_ip }}</td>
+                        <td>{{ asset.idc }}</td>
+                        <td>{{ asset.hostname }}</td>
+                        <td>{{ asset.cpu }}</td>
+                        <td>{{ asset.memory }}</td>
+                        <td>{{ asset.disk }}</td>
+                        <td>{{ asset.system }}</td>
+                        <td>{{ asset.get_status_display }}</td>
+                        <td>{{ asset.get_asset_type_display }}</td>
+                        <td>{{ asset.get_env_display }}</td>
+                        <td>{{ asset.host }}</td>
+                        <td>{{ asset.comment }}</td>
+                        <td class="danger"><a href="{% url 'edit' %}?p={{ asset.id }}">编辑</a> <a class="delete" href="{% url 'del' %}?p={{ asset.id }}">删除</a></td>
+                    </tr>
+                {% endfor %}    
+            </table>
+
+            <div class="pull-right">
+                {% ifequal flag 1 %}
+                    <ul class="pagination">
+                        {% if asset_list.has_previous %}
+                            <li><a href="?page={{ asset_list.previous_page_number }}">上一页</a><li>
+                        {% endif %}
+                        {% for page in page_list %}
+                            {% ifequal page asset_list.number %}
+                                <li class="active"><a href="?page={{ page }}">{{ page }}</a></li>
+                            {% else %}
+                                <li><a href="?page={{ page }}">{{ page }}</a><li>
+                            {% endifequal %}
+                        {% endfor %}
+                        {% if asset_list.has_next %}
+                            <li><a href="?page={{ asset_list.next_page_number }}">下一页</a><li>
+                        {% endif %}
+                    </ul>
+                {% endifequal %}
+            </div>
+        </div>
+
+        <script>
+            setTimeout(function(){
+            	init();
+            },200);
+            
+            function init(){
+                var s;
+            	var selectList = ["aname","atype","host","env","status"];
+            	for(s in selectList){
+            		var obj = document.getElementById(selectList[s]);
+            		var val = getUrlParms(selectList[s]);
+            		for(var i=0; i<obj.options.length; i++){ 
+            			if(obj.options[i].value == val){ 
+            				obj.options[i].selected = true; 
+            				break; 
+            			} 
+            		}
+            	}
+            }
+            
+            function submit(){
+            	var select1 = findVal("aname");
+            	var select2 = findVal("atype");
+            	var select3 = findVal("host");
+            	var select4 = findVal("env");
+            	var select5 = findVal("status");
+            	
+            	var url = "{% url 'list' %}" + "?aname="+select1+"&atype="+select2+"&host="+select3+"&env="+select4+"&status="+select5;
+            
+            	window.location.href = url;
+            }
+            
+            function findVal(id){
+            	var obj = document.getElementById(id); //定位id
+            	var index = obj.selectedIndex; // 选中索引
+            	var text = obj.options[index].text; // 选中文本
+            	var value = obj.options[index].value; // 选中值
+            	return value;
+            }
+            
+            function getUrlParms(name){
+               var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        //       var reg = new RegExp("(^|&)"+ name +"=(.*)(&|$)");
+               var r = window.location.search.substr(1).match(reg);
+        //       var r = window.location.search.match(reg);
+               if(r != null) 
+               return unescape(r[2]);
+               return null;
+        //        if (r != null) {
+        //            return decodeURL(r[2])
+        //        }
+        //        else {
+        //            return null
+        //        }
+            }    
+            </script>
+    </div>
+</div>
+<script src="{% static 'js/waves.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'js/jquery.core.js' %}"></script>
+<script src="{% static 'js/jquery.app.js' %}"></script>
+{% endblock %}

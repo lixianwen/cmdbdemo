@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block content %}
+{% include "sidebar.html" %}
+<div id="form-item-addidc" class="container">
+    <h3>填写IDC的基本信息</h3>
+    <form method="post" action="" class="form-horizontal" role="form">
+        {% csrf_token %}
+        {% include "forms.html" %}
+        <button type="submit" class="btn btn-primary">提交</button>
+    </form>
+    </div>
+    <script src="{% static 'js/waves.js' %}"></script>
+    <!-- App js -->
+    <script src="{% static 'js/jquery.core.js' %}"></script>
+    <script src="{% static 'js/jquery.app.js' %}"></script>
+{% endblock %}

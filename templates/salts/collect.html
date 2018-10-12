@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block head %}
+<style>
+  #result textarea {
+    width: 400px;
+    height: 200px;
+    margin-top: 10px;
+    display: none;
+  }
+</style>
+<script>
+    $(function () {
+        $("button").click(function () {
+            $.post("{% url 'collect' %}", 
+                   {
+                    "ip": $("#_ip").val(),
+                    "csrfmiddlewaretoken": $("[name=csrfmiddlewaretoken]").val()
+                   },
+                   function (response, status) {
+                       if(status == "success") {
+                           //var data = {{ response|safe }}
+                           var obj = JSON.parse(response);
+                           var txt = "";
+                           var x;
+                           for (x in obj) {
+                               txt += (x + ": " + obj[x] + "\n")
+                           }
+                           $("#test-result").css("display", "block").text(txt)
+                       }
+                   }
+            )
+        })
+    })
+</script>
+{% endblock %}
+{% block content %}
+{% include "sidebar.html" %}
+<div class="content-page">
+    <!-- Start content -->
+    <div class="content">
+        <div class="container">
+            <h3>saltstack 客户端</h3>
+            <form class="form-horizontal" role="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="_ip" class="col-md-2 control-label">IP地址</label>
+                    <div class="col-md-10">
+                        <input id="_ip" type="text" required name="ip" class="form-control">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-info">执行收集</button>
+            </form>
+        </div>
+        <div id="result" class="container">
+           <textarea id="test-result" wrap="hard"></textarea>
+           <a class="btn btn-success" href="{% url 'add' %}" target="_blank" style="margin-top: 5px;">添加到资产列表</a>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/waves.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'js/jquery.core.js' %}"></script>
+<script src="{% static 'js/jquery.app.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block head %}
+    <style>
+        .login-container {
+          margin-top: 150px;
+        }
+        .login-box {
+          width: 450px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        h3 {text-align: center;}
+        button {width: 100%;}
+    </style>
+{% endblock %}
+{% block content %}
+{% load widget_tweaks %}
+<div class="login-container">
+    <div class="login-box">
+       <div class="panel panel-primary">
+           <div class="panel-heading">
+               <h3 class="panel-title">登录</h3>
+           </div>
+           <div class="panel-body">
+               <form method="post" action="" class="form-horizontal" role="form">
+                   {% csrf_token %}
+                   {% for field in form %}
+                       <div class="form-group">
+                           {% ifequal field.id_for_label "id_remember" %}
+                               <label for="{{ field.id_for_label }}" class="col-md-offset-2 control-label">
+                               {{ field }}
+                               {{ field.label }}
+                               </label>
+                               {% if field.help_text %}
+                                   <span class="help-block">{{ field.help_text|safe }}</span>
+                               {% endif %}
+                           {% else %}
+                               <label for="{{ field.id_for_label }}" class="col-md-2 control-label">{{ field.label }}</label>
+                               <div class="col-md-10">
+                                   {{ field|attr:"class:form-control" }}
+                                   {% if field.errors %}
+                                       <div class="{% if field.errors %} help-block {% endif %}">
+                                           {% for error in field.errors %}
+                                              <span class="text-danger">{{ error }}</span>
+                                           {% endfor %}
+                                      </div>
+                                  {% endif %}
+                                  {% if field.help_text %}
+                                      <span class="help-block">{{ field.help_text|safe }}</span>
+                                  {% endif %}
+                               </div>
+                           {% endifequal %}
+                       </div>
+                   {% endfor %}
+                   <button class="btn btn-primary" type="submit">提交</button>
+               </form>
+           </div>
+       </div>
+    </div>
+</div>
+{% endblock %}

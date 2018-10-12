@@ -1,0 +1,80 @@
+        <div id="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="side-menu">
+                <!--<div class="sidebar-inner slimscrollleft">-->
+                    <!--- Sidemenu -->
+                    <div id="sidebar-menu">
+                        <ul>
+                            <li class="has_sub">
+                                <a href="{% url 'index' %}" class="waves-effect">
+                                    <i class="mdi mdi-view-dashboard"></i>
+                                    <span>仪盘表</span>
+                                </a>
+                            </li>
+                            <li class="has_sub">
+                                <a href="javascript:void(0);" class="waves-effect">
+                                    <i class="mdi mdi-invert-colors"></i>
+                                    <span>IDC机房</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="list-unstyled">
+                                    <li><a href="{% url 'idc' %}">机房信息</a></li>
+                                    <li><a href="{% url 'add_idc' %}">增加机房</a></li>
+                                </ul>
+                            </li>
+                            <li class="has_sub">
+                                <a href="javascript:void(0);" class="waves-effect">
+                                    <i class="mdi mdi-layers"></i>
+                                    <span>物理服务器</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="list-unstyled">
+                                    <li><a href="{% url 'ps' %}">服务器列表</a></li>
+                                    <li><a href="{% url 'add_ps' %}">增加服务器</a></li>
+                                </ul>
+                            </li>
+                            <li class="has_sub">
+                                <a href="javascript:void(0);" class="waves-effect">
+                                    <i class="mdi mdi-calendar"></i>
+                                    <span>资产管理</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="list-unstyled">
+                                    <li><a href="{% url 'list' %}">资产列表</a></li>
+                                    <li><a href="{% url 'add' %}">增加资产</a></li>
+                                </ul>
+                            </li>
+                            <li class="has_sub">
+                                <a href="javascript:void(0);" class="waves-effect">
+                                    <i class="mdi mdi-heart-outline"></i>
+                                    <span>saltstack</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="list-unstyled">
+                                    <li><a href="{% url 'install' %}">安装客户端</a></li>
+                                    <li><a href="{% url 'collect' %}">收集信息</a></li>
+                                    <li><a href="{% url 'command' %}">执行命令</a></li>
+                                    <li><a href="{% url 'push' %}">文件推送</a></li>
+                                    <li><a href="{% url 'script' %}">执行脚本</a></li>
+                                </ul>
+                            </li>
+                            <li class="has_sub">
+                                <a href="javascript:void(0);" class="waves-effect">
+                                    <i class="mdi mdi-diamond"></i>
+                                    <span>zabbix</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="list-unstyled">
+                                    <li><a href="{% url 'ADD' %}">添加主机</a></li>
+                                    <li><a href="{% url 'delete' %}">删除主机</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Sidebar -->
+                    <div class="clearfix"></div>
+                </div>
+                <!-- Sidebar -left -->
+            </div>
+            <!-- Left Sidebar End -->
+        </div>

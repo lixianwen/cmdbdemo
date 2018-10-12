@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+<h3>修改IDC的基本信息</h3>
+<form method="post" action="" class="form-horizontal" role="form">
+	{% csrf_token %}
+        {% include "forms.html" %}
+        <button type="submit" class="btn btn-primary">提交</button>
+	<a class="btn btn-default" href="{% url 'idc' %}">取消</a>
+</form>
+</div>
+{% endblock %}

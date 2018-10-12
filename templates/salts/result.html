@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block head %}
+<style>
+  p.tip span {
+    font-weight:bold;
+    color:#ff9955;
+    }
+    #result textarea {
+      width: 450px;
+      height: 300px;
+      margin-top: 10px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="editbox">
+<p class="tip"><span>提示：</span>如果return为空，表示任务正在执行或者任务不存在<p>
+<form method="post" action="">
+    {% csrf_token %}
+    <p>
+        <label for="_jid">任务编号</label>
+        <input id="_jid" type="text" required name="jid">
+    </p>
+    <button type="submit">查询</button>
+</form>
+</div>
+<div id="result">
+   <textarea id="test-result" wrap="hard"></textarea>
+</div>
+<script>
+    var data = {{ response|safe }}
+    if (data == undefined) {
+        document.getElementById("test-result").innerHTML = "";
+    }
+    else {
+        document.getElementById("test-result").innerHTML = data;
+    }
+</script>
+{% endblock %}

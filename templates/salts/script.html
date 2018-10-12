@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block head %}
+<style>
+  #result textarea {
+    width: 400px;
+    height: 200px;
+    margin-top: 10px;
+    display: none;
+  }
+  p.tip span {
+    font-weight:bold;
+    color:#ff9955;
+  }
+  #_jid{
+    display: none;
+  }
+</style>
+<script>
+    $(function () {
+        $("button#excute").click(function () {
+            var item = [];
+            var hosts = document.getElementById("select_host");
+            for (var i=0; i<hosts.length; i++) {
+                if (hosts.options[i].selected) {
+                    item.push(hosts.options[i].value)
+                }
+            }
+            console.log(item);
+            $.post("{% url 'script' %}", 
+                   {
+                    "host": JSON.stringify(item),
+                    "script": $("#select_script").val(),
+                    "csrfmiddlewaretoken": $("[name=csrfmiddlewaretoken]").val()
+                   },
+                   function (response, status) {
+                       var r = /(\d+)/;
+                       if(status == "success") {
+                           var obj = JSON.parse(response);
+                           console.log(obj);
+                           jids = [];
+                           for (var i=0; i<obj.length; i++) {
+                               jids.push(obj[i].match(r)[1])
+                           }
+                           console.log(jids)
+                       }
+                   }
+            )
+        })
+        $("button#job").click(function () {
+            var content = "";
+            for (var i=0; i<jids.length; i++) {
+                $.post("{% url 'job' %}",
+                       {"jid": jids[i],
+                        "csrfmiddlewaretoken": $("[name=csrfmiddlewaretoken]").val()
+                       },
+                       function (result, state) {
+                           if (state == "success") {
+                               content += result;
+                               $("p.tip").html("<span>提示：</span>如果return为空，表示任务正在执行或者任务不存在");
+                               $("#test-result").css("display", "block").html(content)
+                           }
+                       }
+                )
+            }
+        })
+    })
+</script>
+{% endblock %}
+{% block content %}
+{% include "sidebar.html" %}
+<div class="content-page">
+    <!-- Start content -->
+    <div class="content">
+        <div class="container">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                上传文件
+            </button>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h3 class="modal-title" id="myModalLabel">上传文件</h3>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}" role="form">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                {{ form }}
+                                <div style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                    <button type="submit" class="btn btn-primary">上传</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <h3>执行脚本</h3>
+            <form class="form-horizontal" role="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="select_host" class="col-md-2 control-label">Minion</label>
+                    <div class="col-md-10">
+                        <select id="select_host" name="host" multiple class="form-control">
+                            {% for asset in asset_list %}
+                                <option value="{{ asset.id }}">{{ asset }}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="help-block">选择主机，支持单台主机或多台主机（按ctrl多选）</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="select_script" class="col-md-2 control-label">选择文件</label>
+                    <div class="col-md-10">
+                        <select name="script" id="select_script" class="form-control">
+                            <option value="" selected>------</option>
+                            {% for file in file_list %}
+                                <option value="{{ file.filename }}">{{ file.filename }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button id="excute" type="button" class="btn btn-primary">执行</button>
+            </form>
+        </div>
+        <p class="tip"><p>
+        <div id="result" class="container">
+           <textarea id="test-result" wrap="hard"></textarea>
+        </div>
+        <div id="hiddenBox" class="container">
+            <form role="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <!-- <label for="_jid">任务编号</label> -->
+                    <input id="_jid" type="text" required name="jid" class="form-control">
+                </div>
+                <button id="job" type="button" class="btn btn-info">查询结果</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/waves.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'js/jquery.core.js' %}"></script>
+<script src="{% static 'js/jquery.app.js' %}"></script>
+{% endblock %}

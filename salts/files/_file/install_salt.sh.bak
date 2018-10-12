@@ -1,0 +1,32 @@
+#!/bin/bash
+
+ip=$1
+release=`rpm -q centos-release |cut -d'-' -f3`
+
+install() {
+    yum clean expire-cache
+    yum install -y salt-minion
+#    yum install -y salt-minion 
+    sed -i 's/#master: salt/master: 192.168.0.125/' /etc/salt/minion
+    sed -i "s/#id:/id: $ip/" /etc/salt/minion
+}
+
+if [ ${release} -eq 6 ]
+then
+    yum install https://repo.saltstack.com/yum/redhat/salt-repo-2018.3-1.el6.noarch.rpm
+#    yum install -y https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el6.noarch.rpm
+    install
+#    yum clean expire-cache
+#    yum install -y salt-minion
+#    sed -i 's/#master: salt/master: 192.168.0.125/' /etc/salt/minion
+#    sed -i "s/#id:/id: $ip/" /etc/salt/minion
+    service salt-minion restart
+elif [ ${release} -eq 7 ]
+then
+    yum install -y https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm
+    install
+    systemctl restart salt-minion
+else
+    echo "only support centos 6 or centos 7"
+    exit 1
+fi

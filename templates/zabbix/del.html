@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block head %}
+<script>
+    $(function () {
+        $("form").submit(function (e) {
+            var action = confirm("确认删除？")
+            if (action == false) {
+                e.preventDefault()
+            }
+        })
+    })
+</script>
+{% endblock %}
+{% block content %}
+{% include "sidebar.html" %}
+<div class="content-page">
+    <!-- Start content -->
+    <div class="content">
+        <div class="container">
+            <h3>删除 zabbix agent</h3>
+            <form method="post" action="" role="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="host">监控主机</label>
+                    <select name="host_id" multiple id="host" class="form-control" size="10">
+                        <option value="" selected>------------------------</option>
+                         {% for host in host_list %}
+                             <option value="{{ host.hostid }}">{{ host.host }}</option>
+                         {% endfor %}
+                    </select>
+                    <span class="help-block">选择主机，支持单个或多个主机（按ctrl多选）</span>
+                </div>
+                <button type="submit" class="btn btn-danger">删除</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/waves.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'js/jquery.core.js' %}"></script>
+<script src="{% static 'js/jquery.app.js' %}"></script>
+{% endblock %}

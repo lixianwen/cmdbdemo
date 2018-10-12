@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block head %}
+<script>
+    $(function () {
+        $("a.delete").click(function (e) {
+            var action = confirm("确认删除？");
+            if (action == false) {
+                e.preventDefault()
+            }
+        })
+    })
+</script>
+{% endblock %}
+{% block content %}
+{% include "sidebar.html" %}
+<div class="content-page">
+    <!-- Start content -->
+    <div class="content">
+         <div class="table-responsive">
+             <table class="table table-hover table-bordered">
+                 <caption>IDC详细信息</caption>
+                 <thead>
+                     <tr>
+                         <th>IDC名称</th>
+                         <th>机房地址</th>
+                         <th>联系人</th>
+                         <th>联系方式</th>
+                         <th>机房带宽</th>
+                         <th>IP地址段</th>
+                         <th>备注</th>
+                         <th>操作</th>
+                     </tr>
+                 </thead>
+                 {% for idc in idc_list %}
+                     <tr>
+                         <td>{{ idc.name }}</td>
+                         <td>{{ idc.address }}</td>
+                         <td>{{ idc.linkman }}</td>
+                         <td>{{ idc.ci }}</td>
+                         <td>{{ idc.bandwidth }}</td>
+                         <td>{{ idc.ip_segment }}</td>
+                         <td>{{ idc.comment }}</td>
+                         <td class="danger"><a href="{% url 'edit_idc' %}?p={{ idc.id }}">编辑</a> <a class="delete" href="{% url 'del_idc' %}?p={{ idc.id }}">删除</a></td>
+                     </tr>
+                 {% endfor %}    
+             </table>
+         </div>
+    </div>
+</div>
+<script src="{% static 'js/waves.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'js/jquery.core.js' %}"></script>
+<script src="{% static 'js/jquery.app.js' %}"></script>
+{% endblock %}

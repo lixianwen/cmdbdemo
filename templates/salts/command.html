@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block head %}
+<style>
+  #result textarea {
+    width: 700px;
+    height: 300px;
+    margin-top: 10px;
+    display: none;
+  }
+</style>
+<script>
+    $(function () {
+        $("button").click(function () {
+            $.post("{% url 'command' %}", 
+                   {
+                    "minion": $("select").val(),
+                    "cmd": $("#id_cmd").val(),
+                    "csrfmiddlewaretoken": $("[name=csrfmiddlewaretoken]").val()
+                   },
+                   function (response, status) {
+                       if(status == "success") {
+                           $("#test-result").css("display", "block").text(response)
+                       }
+                   }
+            )
+        })
+    })
+</script>
+{% endblock %}
+{% block content %}
+{% include "sidebar.html" %}
+<div class="content-page">
+    <!-- Start content -->
+    <div class="content">
+        <div class="container">
+            <h3>saltstack 客户端</h3>
+            <form class="form-horizontal" role="form">
+                {% csrf_token %}
+                {% include "forms.html" %}
+                <button type="button" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div id="result" class="container">
+           <textarea id="test-result" wrap="hard"></textarea>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/waves.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'js/jquery.core.js' %}"></script>
+<script src="{% static 'js/jquery.app.js' %}"></script>
+{% endblock %}
