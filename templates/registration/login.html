@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block msg %}{% include "message.html" %}{% endblock %}
+{% load static %}
 {% block head %}
     <style>
         .login-container {
@@ -13,6 +14,32 @@
         h3 {text-align: center;}
         button {width: 100%;}
     </style>
+    <script src="{% static 'js/base64.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>
+        $(function () {
+            var user = Cookies.get('username');
+            var pass = Cookies.get('password');
+            if (user && pass) {
+                $("#id_username").val(user);
+                $("#id_password").val(Base64.decode(pass));
+                $("#id_remember").attr("checked", true)
+            }
+            $("button").click(function () {
+                    var username = $("#id_username").val().trim();
+                    var password = $("#id_password").val().trim();
+                    if ($("#id_remember").prop("checked")) {
+                        Cookies.set('username', username, {expires: 7, path: ''});
+                        Cookies.set('password', Base64.encode(password), {expires: 7, path: ''})
+                    }
+                    else {
+                        Cookies.remove('username', {path: ''});
+                        Cookies.remove('password', {path: ''});
+                    }
+                }
+            );
+        });
+    </script>
 {% endblock %}
 {% block content %}
 {% load widget_tweaks %}

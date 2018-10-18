@@ -1,5 +1,5 @@
 # 一个简单的CMDB Demo
-###### 前端使用bootstrap框架、javascript 和 jquery，还包括一个第三方的主题，应用在侧边栏和其他一些地方
+###### 前端使用bootstrap框架、javascript、jquery、[js-cookie](https://github.com/js-cookie/js-cookie) 和 [js-base64](https://github.com/dankogai/js-base64)，还包括一个第三方的主题，应用在侧边栏和其他一些地方
 ###### 后端使用python、Django框架 和 Django Rest 框架 还有一些优秀的第三方包，例如 [`django-oauth-toolkit`](https://django-oauth-toolkit.readthedocs.io/en/latest/index.html) 和 [`django-widget-tweaks`](https://pypi.org/project/django-widget-tweaks/)
 
 ### 开发环境：
