@@ -27,7 +27,6 @@ def loginview(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            remember = form.cleaned_data['remember']
             user = auth.authenticate(username=username, password=password)
             if not user:
                 error = 'Invalid user or incorrect password.'
@@ -38,8 +37,6 @@ def loginview(request):
                 messages.add_message(request, messages.ERROR, error)
                 return HttpResponseRedirect(reverse('loginview'))
             else:
-#                if remember and remember == 'on':
-#                    request.session.set_expiry(settings.KEEP_LOGGED_DURATION)
                 auth.login(request, user)
                 return HttpResponseRedirect(reverse('index'))
     form = LoginForm()
