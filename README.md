@@ -17,7 +17,7 @@ python 2.7.5
 
 在`salt_api.py` 和 `zabbixapi.py` 里使用`os`模块获取配置文件路径时，发现`ConfigParser`模块无法读取配置文件。自测`Bug`，尚未修复
 
-###项目组成
+### 项目组成
 - 主机管理
 - Asset API
 - 使用Saltstack API 批量做一些工作
@@ -37,7 +37,7 @@ python 2.7.5
 不支持添加代理主机，但是在`zabbixapi.py` 预留了接口  
 参考文档：[zabbix host interface](https://www.zabbix.com/documentation/3.4/zh/manual/api/reference/hostinterface)
 
-### 4. Asset API
+#### 4. Asset API
 使用[Django REST framework](https://www.django-rest-framework.org/) 开发的API，支持检索所有主机（分页显示，每页5条记录）、检索单个主机、创建主机、更新主机和删除主机。restful风格。  
 
 [API 参考文档](http://112.90.228.171/asset/docs/) 
