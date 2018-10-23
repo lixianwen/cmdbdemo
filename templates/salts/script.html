@@ -88,7 +88,7 @@
                             <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}" role="form">
                                 {% csrf_token %}
                                 <div class="form-group">
-                                {{ form }}
+                                {{ upload_form }}
                                 <div style="margin-top: 10px;">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                                     <button type="submit" class="btn btn-primary">上传</button>
