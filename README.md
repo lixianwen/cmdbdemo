@@ -17,7 +17,7 @@ python 2.7.5
 
 在`salt_api.py` 和 `zabbixapi.py` 里使用`os`模块获取配置文件路径时，发现`ConfigParser`模块无法读取配置文件。自测`Bug`，尚未修复
 
-###项目组成
+### 项目组成
 - 主机管理
 - Asset API
 - 使用Saltstack API 批量做一些工作
