@@ -6,14 +6,14 @@ from rest_framework.views import exception_handler
 
 r = re.compile(r'[\.]+')
 
-def validIPV4(s):      
-    ip_list = r.split(s)
-    if len(ip_list) != 4:
+def validIPV4(ip):      
+    split_ip = r.split(ip)
+    if len(split_ip) != 4:
         print('IP地址格式不正确')
         return False
-    for i in ip_list:
-        if i.isdigit():
-            if int(i) not in xrange(0, 256):
+    for num in split_ip:
+        if num.isdigit():
+            if int(num) not in xrange(0, 256):
                 print('IP地址不合法')
                 return False
         else:
