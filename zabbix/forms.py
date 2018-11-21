@@ -30,13 +30,12 @@ def getHostid():
 
 class AddForm(forms.Form):
     hostname = forms.CharField(label=u'主机名称')
-    ip = forms.ModelChoiceField(queryset=Asset.objects.all(), label=u'IP地址')
+    ip = forms.ModelChoiceField(queryset=Asset.objects.all(), label=u'IP地址', empty_label=None)
     group_id = forms.ChoiceField(choices=getGroupid(), label=u'主机群组')
     template_id = forms.MultipleChoiceField(
                                 choices=getTemplateid(),
                                 widget=forms.SelectMultiple(attrs={'size': 6}),
-                                label=u'模版', 
-                                help_text=u'选择模版，支持链接单个或多个模版（按ctrl多选）')
+                                label=u'模版') 
 
     def clean_ip(self):
         asset_instance = self.cleaned_data['ip']
