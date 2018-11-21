@@ -106,21 +106,17 @@ def check_file():
 def push(request):
     check_file()
     if request.method == 'POST':
-#        hosts = json.loads(request.POST.getlist('host'))
-        hosts = json.loads(request.POST.get('host'))
+        hosts = request.POST.getlist('host')
         push_file = request.POST.get('push_file')
         dest = request.POST.get('dest')
-#        dic = {}
         result = list()
         for host in hosts:
-            asset = Asset.objects.get(id=host)
+            asset = Asset.objects.get(id=int(host))
             if asset.ip:
                 jid1 = saltapi.pushFile(asset.ip, push_file, dest)
-#                dic.update({asset.ip: jid1})
                 result.append(jid1)
             elif asset.other_ip:
                 jid2 = saltapi.pushFile(asset.other_ip, push_file, dest)
-#                dic.update({asset.other_ip: jid2})
                 result.append(jid2)
         result = json.dumps(result)
         return HttpResponse(result)
@@ -134,7 +130,6 @@ def job(request):
     if request.method == 'POST':
         jid = request.POST.get('jid')
         response = saltapi.getReuslt(jid)
-#        response = json.dumps(response)
         return HttpResponse(response)
     return render(request, 'salts/result.html')
 
@@ -145,19 +140,16 @@ def script(request):
     file_list = Upload.objects.all()
     upload_form = FileUploadForm()
     if request.method == 'POST':
-#        hosts = request.POST.getlist('host')
-        hosts = json.loads(request.POST.get('host'))
+        hosts = request.POST.getlist('host')
         f_script = request.POST.get('script')
         result = list()
         for host in hosts:
-            asset = Asset.objects.get(id=host)
+            asset = Asset.objects.get(id=int(host))
             if asset.ip:
                 jid1 = saltapi.exeScript(asset.ip, f_script)
-#                dic.update({asset.ip: jid1})
                 result.append(jid1)
             elif asset.other_ip:
                 jid2 = saltapi.exeScript(asset.other_ip, f_script)
-#                dic.update({asset.other_ip: jid2})
                 result.append(jid2)
         result = json.dumps(result)
         return HttpResponse(result)
