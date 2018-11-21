@@ -3,7 +3,11 @@
     <div class="form-group">
         <label for="{{ field.id_for_label }}" class="col-md-2 control-label">{{ field.label }}</label>
             <div class="col-md-10">
-                {{ field|attr:"class:form-control" }}
+                {% if field|widget_type == "select" or field|widget_type == "selectmultiple" %}
+                    {{ field|add_class:"form-control chosen-select"}}
+                {% else %}
+                    {{ field|add_class:"form-control" }}
+                {% endif %}
                 {% if field.errors %}
                     <div class="{% if field.errors %} help-block {% endif %}">
                         {% for error in field.errors %}
