@@ -2,6 +2,8 @@
 {% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
+<link href="{% static 'plugin/chosen.min.css' %}" rel="stylesheet" type="text/css" />
+<script src="{% static 'plugin/chosen.jquery.min.js' %}"></script>
 <style>
   #result textarea {
     width: 700px;
@@ -13,18 +15,24 @@
 <script>
     $(function () {
         $("button").click(function () {
-            $.post("{% url 'command' %}", 
-                   {
-                    "minion": $("select").val(),
-                    "cmd": $("#id_cmd").val(),
-                    "csrfmiddlewaretoken": $("[name=csrfmiddlewaretoken]").val()
-                   },
-                   function (response, status) {
-                       if(status == "success") {
-                           $("#test-result").css("display", "block").text(response)
-                       }
-                   }
-            )
+            $.post(
+                "{% url 'command' %}", 
+                $("form").serialize(),
+                function (response) {
+                    $("#test-result").show().text(response)
+                }
+            ).fail(function (xhr, errorTxt, errorType) {
+                alert(xhr.status + ": " + errorType)
+            })
+        });
+        $(document).ajaxStart(function () {
+            $(".loading").show();
+        }).ajaxStop(function () {
+            $(".loading").hide();
+        });
+        $(".chosen-select").chosen({
+            disable_search_threshold: 5,
+            no_results_text: "没有该选项："
         })
     })
 </script>
@@ -44,6 +52,7 @@
         </div>
         <div id="result" class="container">
            <textarea id="test-result" wrap="hard"></textarea>
+           <span class="loading" style="display: none;">正在努力加载中....</span>
         </div>
     </div>
 </div>

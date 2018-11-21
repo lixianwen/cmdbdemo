@@ -13,24 +13,26 @@
 <script>
     $(function () {
         $("button").click(function () {
-            $.post("{% url 'collect' %}", 
-                   {
-                    "ip": $("#_ip").val(),
-                    "csrfmiddlewaretoken": $("[name=csrfmiddlewaretoken]").val()
-                   },
-                   function (response, status) {
-                       if(status == "success") {
-                           //var data = {{ response|safe }}
-                           var obj = JSON.parse(response);
-                           var txt = "";
-                           var x;
-                           for (x in obj) {
-                               txt += (x + ": " + obj[x] + "\n")
-                           }
-                           $("#test-result").css("display", "block").text(txt)
-                       }
-                   }
-            )
+            $.ajax({
+                type: "POST",
+                url: "{% url 'collect' %}",
+                data: $("form").serialize(),
+                dataType: "json",
+                success: function (obj) {
+                    var txt = "";
+                    for (var x in obj) {
+                        txt += (x + ": " + obj[x] + "\n")
+                    }
+                    $("#test-result").show().text(txt)
+                }
+            }).fail(function (xhr, errorTxt, errorType) {
+                alert(xhr.status + ": " + errorType)
+            }
+        });
+        $(document).ajaxStart(function () {
+            $(".loading").show();
+        }).ajaxStop(function () {
+            $(".loading").hide();
         })
     })
 </script>
@@ -55,7 +57,8 @@
         </div>
         <div id="result" class="container">
            <textarea id="test-result" wrap="hard"></textarea>
-           <a class="btn btn-success" href="{% url 'add' %}" target="_blank" style="margin-top: 5px;">添加到资产列表</a>
+           <span class="loading" style="display: none;">正在努力加载中....</span>
+           <div><a class="btn btn-success" href="{% url 'add' %}" target="_blank" style="margin-top: 5px;">添加到资产列表</a></div>
         </div>
     </div>
 </div>

@@ -2,6 +2,8 @@
 {% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
+<link href="{% static 'plugin/chosen.min.css' %}" rel="stylesheet" type="text/css" />
+<script src="{% static 'plugin/chosen.jquery.min.js' %}"></script>
 <script>
     $(function () {
         $("form").submit(function (e) {
@@ -9,6 +11,9 @@
             if (action == false) {
                 e.preventDefault()
             }
+        });
+        $(".chosen-select").chosen({
+            no_results_text: "没有该选项："
         })
     })
 </script>
@@ -23,14 +28,11 @@
             <form method="post" action="" role="form">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="host">监控主机</label>
-                    <select name="host_id" multiple id="host" class="form-control" size="10">
-                        <option value="" selected>------------------------</option>
+                    <select name="host_id" multiple class="form-control chosen-select" data-placeholder="选择一台或多台Agent" size="10">
                          {% for host in host_list %}
                              <option value="{{ host.hostid }}">{{ host.host }}</option>
                          {% endfor %}
                     </select>
-                    <span class="help-block">选择主机，支持单个或多个主机（按ctrl多选）</span>
                 </div>
                 <button type="submit" class="btn btn-danger">删除</button>
             </form>

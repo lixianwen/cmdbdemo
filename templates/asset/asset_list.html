@@ -3,14 +3,71 @@
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
 <script>
-    $(function () {
-        $("a.delete").click(function (e) {
-            var action = confirm("确认删除？");
-            if (action == false) {
-                e.preventDefault()
-            }
+$(function () {
+    $("a.delete").click(function (e) {
+        var action = confirm("确认删除？");
+        if (action == false) {
+            e.preventDefault()
+        }
+    });
+    function findValue(id) {
+        var value = $("#" + id).val();
+        return value
+    }
+    function changeValue() {
+        var idc_name = findValue("aname");
+        var type = findValue("atype");
+        var host = findValue("host");
+        var env = findValue("env");
+        var status = findValue("status");
+        var param = $.param({
+            aname: idc_name,
+            atype: type,
+            host: host,
+            env: env,
+            status: status
         })
-    })
+        var url = "{% url 'list' %}" + "?" + param;
+        window.location.href = url;
+    }
+    function getURLParam(name) {
+        var r = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var s = window.location.search.substr(1).match(r);
+        if (s !== null) {
+            return decodeURI(s[2])
+        }
+        else {
+            return null
+        }
+    }
+    function setValue() {
+        var selectList = ["aname", "atype", "host", "env", "status"];
+        for (var s in selectList) {
+            $("#" + s + " > option").each(function () {
+                var val = getURLParam(s);
+                if ($(this).val() == val) {
+                    $(this).attr("selected", true)
+                    return false
+                }
+            })
+        }
+    }
+    $("#aname").change(function () {
+        changeValue()
+    });
+    $("#atype").change(function () {
+        changeValue()
+    });
+    $("#host").change(function () {
+        changeValue()
+    });
+    $("#env").change(function () {
+        changeValue()
+    });
+    $("#status").change(function () {
+        changeValue()
+    });
+})
 </script>
 {% endblock %}
 {% block content %}
@@ -35,31 +92,31 @@
                 </div>
             </div>
         </div>
-         <select id="aname"  onchange="submit();">
+         <select id="aname">
                 <option value="">机房</option>
                 {% for idc in idc_list %}
                     <option value="{{ idc.id }}">{{ idc.name }}</option>
                 {% endfor %}
         </select>
-        <select id="atype"  onchange="submit();">
+        <select id="atype">
                 <option value="">资产类型</option>
                 <option value="1">虚拟机</option>
                 <option value="2">路由器</option>
                 <option value="3">交换机</option>
                 <option value="4">其他</option>
         </select>
-        <select id="host" onchange="submit();">
+        <select id="host">
                 <option value="">宿主机</option>
                 {% for ps in ps_list %}
                     <option value="{{ ps.id }}">{{ ps.ip }}</option>
                 {% endfor %}
         </select>
-        <select id="env"  onchange="submit();">
+        <select id="env">
                 <option value="">系统环境</option>
                 <option value="1">生产环境</option>
                 <option value="2">测试环境</option>
         </select>
-        <select id="status"  onchange="submit();">
+        <select id="status">
                 <option value="">资产状态</option>
                 <option value="1">已使用</option>
                 <option value="2">未使用</option>
@@ -139,10 +196,19 @@
         </div>
 
         <script>
-            setTimeout(function(){
-            	init();
-            },200);
-            
+            setTimeout(function () {
+            	init()
+            }, 200);
+            function getUrlParms(name){
+               var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+               var r = window.location.search.substr(1).match(reg);
+               if(r != null) {
+                   return decodeURI(r[2])
+               }
+               else {
+                   return null
+               }
+            }    
             function init(){
                 var s;
             	var selectList = ["aname","atype","host","env","status"];
@@ -157,43 +223,7 @@
             		}
             	}
             }
-            
-            function submit(){
-            	var select1 = findVal("aname");
-            	var select2 = findVal("atype");
-            	var select3 = findVal("host");
-            	var select4 = findVal("env");
-            	var select5 = findVal("status");
-            	
-            	var url = "{% url 'list' %}" + "?aname="+select1+"&atype="+select2+"&host="+select3+"&env="+select4+"&status="+select5;
-            
-            	window.location.href = url;
-            }
-            
-            function findVal(id){
-            	var obj = document.getElementById(id); //定位id
-            	var index = obj.selectedIndex; // 选中索引
-            	var text = obj.options[index].text; // 选中文本
-            	var value = obj.options[index].value; // 选中值
-            	return value;
-            }
-            
-            function getUrlParms(name){
-               var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-        //       var reg = new RegExp("(^|&)"+ name +"=(.*)(&|$)");
-               var r = window.location.search.substr(1).match(reg);
-        //       var r = window.location.search.match(reg);
-               if(r != null) 
-               return unescape(r[2]);
-               return null;
-        //        if (r != null) {
-        //            return decodeURL(r[2])
-        //        }
-        //        else {
-        //            return null
-        //        }
-            }    
-            </script>
+        </script>
     </div>
 </div>
 <script src="{% static 'js/waves.js' %}"></script>

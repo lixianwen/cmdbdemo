@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 {% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
+{% block head %}
+<link href="{% static 'plugin/chosen.min.css' %}" rel="stylesheet" type="text/css" />
+<script src="{% static 'plugin/chosen.jquery.min.js' %}"></script>
+<script>
+$(function () {
+    $(".chosen-select").chosen({
+        disable_search_threshold: 5,
+        no_results_text: "没有该选项：",
+    })
+})
+</script>
+{% endblock %}
 {% block content %}
 {% include "sidebar.html" %}
 <div class="content-page">
