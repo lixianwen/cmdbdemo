@@ -22,18 +22,11 @@
 <script>
     $(function () {
         $("button#excute").click(function () {
-            var item = [];
-            var hosts = document.getElementById("select_host");
-            for (var i=0; i<hosts.length; i++) {
-                if (hosts.options[i].selected) {
-                    item.push(hosts.options[i].value)
-                }
-            };
             $.ajax({
                 type: "POST",
                 url: "{% url 'script' %}",
                 data: $.param({
-                    host: item,
+                    host: $("#select_host").val(),
                     script: $("#select_script").val(),
                     csrfmiddlewaretoken: $("#execute_form [name=csrfmiddlewaretoken]").val()
                 }, true),
