@@ -29,7 +29,7 @@
                    host: $("#select_host").val(),
                    push_file: $("#select_file").val(),
                    dest: $("#_dest").val(),
-                   csrfmiddlewaretoken: $("#push_form [name=csrfmiddlewaretoken]").val(),
+                   csrfmiddlewaretoken: $("#push_form input[name=csrfmiddlewaretoken]").val(),
               }, true),
                dataType: "json",
                success: function (response) {

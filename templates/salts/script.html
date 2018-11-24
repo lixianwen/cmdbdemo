@@ -28,7 +28,7 @@
                 data: $.param({
                     host: $("#select_host").val(),
                     script: $("#select_script").val(),
-                    csrfmiddlewaretoken: $("#execute_form [name=csrfmiddlewaretoken]").val()
+                    csrfmiddlewaretoken: $("#execute_form input[name=csrfmiddlewaretoken]").val()
                 }, true),
                 dataType: "json",
                 success: function (response) {
