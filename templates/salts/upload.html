@@ -1,6 +1,60 @@
 {% extends "base.html" %}
+{% block head %}
+<style>
+.progress {
+  position:relative;
+  width:400px;
+  border: 1px solid #ddd;
+  padding: 1px;
+  border-radius: 3px;
+}
+.bar {
+  background-color: #B4F5B4;
+  width:0%;
+  height:20px;
+  border-radius: 3px;
+}
+.percent {
+  position:absolute;
+  top:3px;
+  left:48%;
+  display:inline-block;
+}
+</style>
+<script src="http://malsup.github.com/min/jquery.form.min.js"></script>
+<script>
+$(function () {
+    var bar = $(".bar");
+    var percent = $(".percent");
+    var stat = $("#status");
+
+    $("form").ajaxForm({
+        beforeSend: function () {
+            stat.empty();
+            var percentVal = "0%";
+            bar.width(percentVal);
+            percent.text(percentVal)
+        },
+        uploadProgress: function (event, position, total, percentComplete) {
+            var percentVal = percentComplete + "%";
+            bar.width(percentVal);
+            percent.text(percentVal)
+        },
+        success: function (response) {
+            var percentVal = "100%";
+            bar.width(percentVal);
+            percent.text(percentVal)
+            stat.html(response)
+        },
+        resetForm: true
+    });
+    $("#menu").menu()
+})
+</script>
+{% endblock %}
 {% block content %}
-<div class="">
+{% include "sidebar.html" %}
+<div>
     <h3>上传文件</h3>
     <form method="post" enctype="multipart/form-data" action="">
         {% csrf_token %}
@@ -8,4 +62,11 @@
         <button type="submit">Submit</button>
     </form>
 </div>
+
+<div class="progress">
+    <div class="bar"></div>
+    <div class="percent">0%</div>
+</div>
+
+<div id="status"></div>
 {% endblock %}

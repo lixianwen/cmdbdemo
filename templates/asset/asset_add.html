@@ -10,6 +10,7 @@ $(function () {
           no_results_text: "没有该选项：",
           disable_search: true
     });
+    $("#menu").menu()
 })
 </script>
 {% endblock %}
@@ -28,8 +29,4 @@ $(function () {
         </div>
     </div>
 </div>
-<script src="{% static 'js/waves.js' %}"></script>
-<!-- App js -->
-<script src="{% static 'js/jquery.core.js' %}"></script>
-<script src="{% static 'js/jquery.app.js' %}"></script>
 {% endblock %}

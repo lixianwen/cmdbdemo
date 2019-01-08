@@ -9,7 +9,7 @@ class SaltAPI(object):
     def __init__(self):
         self.s = requests.session()
         self.c = ConfigParser(allow_no_value=True)
-        self.c.read('/path/to/cmdbdemo/cmdb.conf')
+        self.c.read(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cmdb.conf'))
         self.url = self.c.get('salt', 'url')
 
     def getToken(self):

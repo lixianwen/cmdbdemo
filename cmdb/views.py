@@ -2,6 +2,7 @@
 #coding:utf8
 
 from forms import LoginForm
+from verifycode import VeifyCode
 from django.shortcuts import render
 from django.contrib import auth
 from django.contrib import messages
@@ -27,6 +28,12 @@ def loginview(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+            code = form.cleaned_data['verification_code']
+            text = request.session.get('verify_code', '')
+            if text != code:
+                error = '验证码错误，请重新登录'
+                messages.add_message(request, messages.ERROR, error)
+                return HttpResponseRedirect(reverse('loginview'))
             user = auth.authenticate(username=username, password=password)
             if not user:
                 error = 'Invalid user or incorrect password.'
@@ -45,3 +52,29 @@ def loginview(request):
 def logoutview(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+def image(request):
+    verifyCode = VeifyCode()
+    content, buf_str = verifyCode.getImage()
+    request.session.pop('verify_code', '')
+    request.session['verify_code'] = content
+    return HttpResponse(buf_str, content_type='mage/png')
+
+def verify(request):
+    if request.method == 'POST':
+        verify_code = request.session.get('verify_code', '')
+        code = request.POST.get('verification_code', '')
+        if verify_code != code.lower():
+            return HttpResponse('false')
+        else:
+            return HttpResponse('true')
+
+def verify_password(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        user = auth.authenticate(username=username, password=password)
+        if not user:
+            return HttpResponse('false')
+        else:
+            return HttpResponse('true')

@@ -8,7 +8,8 @@ perm_dic = {
     'view_idc': ['idc', 'GET', []],
     'view_ps': ['ps', 'GET', []],
     'view_asset': ['list', 'GET', []],
-    'search_asset': ['list', 'POST', []]
+    'search_asset': ['list', 'POST', []],
+    'view_hostname': ['hostname', 'GET', []]
 }
 
 def check_user_perm(request, perm_key):

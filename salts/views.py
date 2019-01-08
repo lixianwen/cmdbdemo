@@ -21,6 +21,7 @@ from forms import InstallForm, FileUploadForm, CommandForm, PushForm
 # Create your views here.
 
 saltapi = SaltAPI()
+asset_list = Asset.objects.all()
 
 @permission_required('auth.change_user')
 def collect(request):
@@ -92,8 +93,9 @@ def upload(request):
             f = Upload()
             f.filename = form.cleaned_data['file']
             f.save()
-        messages.add_message(request, messages.SUCCESS, u'文件 {0} 上传成功, 大小为{1}KB'.format(f.filename.name.split('/')[-1], int(f.filename.size)/1024))
-        return HttpResponseRedirect(reverse('push'))
+#        messages.add_message(request, messages.SUCCESS, u'文件 {0} 上传成功, 大小为{1}KB'.format(f.filename.name.split('/')[-1], int(f.filename.size)/1024))
+#        return HttpResponseRedirect(reverse('push'))
+        return HttpResponse(u'文件 {0} 上传成功, 大小为{1}KB'.format(f.filename.name.split('/')[-1], int(f.filename.size)/1024))
 #    form = FileUploadForm()
 #    return render(request, 'salts/upload.html', locals())
 
@@ -120,9 +122,9 @@ def push(request):
                 result.append(jid2)
         result = json.dumps(result)
         return HttpResponse(result)
-    asset_list = Asset.objects.all()
     file_list = Upload.objects.all()
     form = FileUploadForm()
+    locals().update({'asset_list': asset_list})
     return render(request, 'salts/push.html', locals())
 
 @permission_required('auth.change_user')
@@ -135,7 +137,6 @@ def job(request):
 
 @permission_required('auth.change_user')
 def script(request):
-    asset_list = Asset.objects.all()
     check_file()
     file_list = Upload.objects.all()
     upload_form = FileUploadForm()
@@ -153,4 +154,5 @@ def script(request):
                 result.append(jid2)
         result = json.dumps(result)
         return HttpResponse(result)
+    locals().update({'asset_list': asset_list})
     return render(request, 'salts/script.html', locals())

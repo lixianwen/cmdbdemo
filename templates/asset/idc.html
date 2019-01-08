@@ -9,14 +9,14 @@
             if (action == false) {
                 e.preventDefault()
             }
-        })
+        });
+        $("#menu").menu()
     })
 </script>
 {% endblock %}
 {% block content %}
 {% include "sidebar.html" %}
 <div class="content-page">
-    <!-- Start content -->
     <div class="content">
          <div class="table-responsive">
              <table class="table table-hover table-bordered">
@@ -49,8 +49,4 @@
          </div>
     </div>
 </div>
-<script src="{% static 'js/waves.js' %}"></script>
-<!-- App js -->
-<script src="{% static 'js/jquery.core.js' %}"></script>
-<script src="{% static 'js/jquery.app.js' %}"></script>
 {% endblock %}

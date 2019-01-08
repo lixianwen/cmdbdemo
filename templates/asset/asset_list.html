@@ -40,17 +40,17 @@ $(function () {
             return null
         }
     }
+    var selectList = ["aname", "atype", "host", "env", "status"];
     function setValue() {
-        var selectList = ["aname", "atype", "host", "env", "status"];
-        for (var s in selectList) {
-            $("#" + s + " > option").each(function () {
-                var val = getURLParam(s);
+        $.each(selectList, function (index, value) {
+            var val = getURLParam(value);
+            $.each($("#" + value).children(), function (index, value) {
                 if ($(this).val() == val) {
-                    $(this).attr("selected", true)
-                    return false
+                    $(this).attr("selected", true);
+                    return
                 }
             })
-        }
+        })
     }
     $("#aname").change(function () {
         changeValue()
@@ -67,8 +67,53 @@ $(function () {
     $("#status").change(function () {
         changeValue()
     });
+
+    $("#menu").menu();
+
+    $("#search").button({
+        icon: "ui-icon-search"
+    });
+
+    $.ajax({
+        type: "GET",
+        url: "{% url 'hostname' %}",
+        dataType: "json",
+        success: function (response) {
+            $("input[name=keyword]").autocomplete({
+                source: response,
+                autoFocus: true
+            })
+        }
+    });
+
+    $(".cancel-select a").click(function () {
+        $.each(selectList, function (index, value) {
+            $("#" + value + " > option").first().prop("selected", "true");
+        });
+        window.location.href = "{% url 'list' %}"
+    })
 })
 </script>
+<style>
+  input[name=keyword] {
+    border-radius: 5px;
+    height: 32px;
+    border: 1px solid #2779aa;
+    color: #666;
+    text-indent: 5px;
+    line-height: 32px;
+  }
+  .cancel-select {
+    float: left;
+    padding: 3px;
+    border: 1px solid #ADADAD;
+    margin-right: 10px;
+  }
+  .cancel-select a {
+    text-decoration: none;
+    font-size: 12px;
+  }
+</style>
 {% endblock %}
 {% block content %}
 {% include "sidebar.html" %}
@@ -123,13 +168,17 @@ $(function () {
                 <option value="3">待回收</option>
         </select>
 
+        <div class="cancel-select">
+            <a href="javascript:void(0);">清空选择</a>
+        </div>
+
         <div class="search">
             <form action="" method="post">
                 {% csrf_token %}
                 <label>
-                    <input type="search" name="keyword">
+                    <input type="search" name="keyword" placeholder="主机名">
                 </label>
-                <button type="submit">搜索</button>
+                <button type="submit" id="search"></button>
             </form>
         </div>
 
@@ -226,8 +275,4 @@ $(function () {
         </script>
     </div>
 </div>
-<script src="{% static 'js/waves.js' %}"></script>
-<!-- App js -->
-<script src="{% static 'js/jquery.core.js' %}"></script>
-<script src="{% static 'js/jquery.app.js' %}"></script>
 {% endblock %}

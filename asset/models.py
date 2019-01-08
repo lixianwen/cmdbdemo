@@ -91,4 +91,5 @@ class Asset(models.Model):
         permissions = (
             ("view_asset", "Can see available asset"),
             ("search_asset", "Can search asset"),
+            ("view_hostname", "Can retrieve asset hostname"),
         )

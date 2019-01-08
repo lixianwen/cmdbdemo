@@ -31,6 +31,9 @@ urlpatterns = [
     url(r'^$', index, name='index'),
     url(r'^login/$', loginview, name='loginview'),
     url(r'^logout/$', logoutview, name='logoutview'),
+    url(r'^image/$', image, name='image'),
+    url(r'^verify/$', verify, name='verify'),
+    url(r'^password/$', verify_password, name='password'),
     url(r'^accounts/login/$', login),
 #    url(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]

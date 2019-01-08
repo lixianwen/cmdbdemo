@@ -2,68 +2,7 @@ body {
   font-family: Serif, Sans-serif;
   font-size: 100%;
 }
-/*
-ul.messages li {
-  list-style-type: none;
-}
 
-.success {
-  color: green;  
-}
-
-.error {
-  color: red;
-}
-
-a {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-*/
-/*
-table {
-  border: 1px solid black;
-  border-collapse: collapse;
-  width: 70%;
-}
-
-th {
-  font-weight: bold;
-  height: 30px;
-}
-
-td {
-  text-align: center;
-  vertical-align: bottom;
-  padding: 10px;
-}
-
-caption {
-  font-weight: bold;
-}
-
-div#editbox form {
-  background-color: white;
-  padding: 5px 20px 10px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: grey;
-  width: 400px;
-}
-*/
-/*
-.cancel {
-  padding: 10px 0;
-}
-*/
-/*
-select {
-  margin: 5px;
-}
-*/
 .search {
   float: right;
 }
@@ -71,4 +10,18 @@ select {
 p.tip span {
   font-weight:bold;
   color:#ff9955;
+}
+
+#menu-box {
+  width: 200px;
+  height: 100%;
+}
+
+#menu a {
+  text-decoration: none;
+}
+
+.content {
+  margin-left: 250px;
+  margin-right: 30px;
 }

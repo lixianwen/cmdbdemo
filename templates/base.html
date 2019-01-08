@@ -4,16 +4,14 @@
     <meta charset="utf8"/>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
-    <link href="{% static 'css/core.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'css/icons.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'css/menu.css' %}" rel="stylesheet" type="text/css" />
-    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css"/>
     <script src="http://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.min.css' %}"/>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     {% block head %}{% endblock %}
 </head>
-<!-- <body class="fixed-left"> -->
-<body class="fixed-left">
+<body>
 {% block msg %}{% endblock %}
 {% block content %}{% endblock %}
 </body>

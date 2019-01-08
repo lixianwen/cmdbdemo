@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-        <div class="container">
-            <h3>修改物理服务器的基本信息</h3>
-            <form method="post" action="" class="form-horizontal" role="form">
-                {% csrf_token %}
-                {% include "forms.html" %}
-                <button type="submit" class="btn btn-primary">提交</button>
-                <a class="btn btn-default" href="{% url 'ps' %}">取消</a>
-            </form>
-        </div>
+<div class="container">
+    <h3>修改物理服务器的基本信息</h3>
+    <form method="post" action="" class="form-horizontal" role="form">
+        {% csrf_token %}
+        {% include "forms.html" %}
+        <button type="submit" class="btn btn-primary">提交</button>
+        <a class="btn btn-default" href="{% url 'ps' %}">取消</a>
+    </form>
+</div>
 {% endblock %}

@@ -1,5 +1,5 @@
 # 一个简单的CMDB Demo
-###### 前端使用bootstrap框架、javascript、jquery、[js-cookie](https://github.com/js-cookie/js-cookie) 和 [js-base64](https://github.com/dankogai/js-base64)，还包括一个第三方的主题，应用在侧边栏和其他一些地方
+###### 前端使用bootstrap、javascript、jquery和jquery ui
 ###### 后端使用python、Django框架 和 Django Rest 框架 还有一些优秀的第三方包，例如 [`django-oauth-toolkit`](https://django-oauth-toolkit.readthedocs.io/en/latest/index.html) 和 [`django-widget-tweaks`](https://pypi.org/project/django-widget-tweaks/)
 
 ### 开发环境：
@@ -14,8 +14,6 @@ python 2.7.5
 ### 配置文件
 `/path/to/cmdbdemo/cdb.conf`  
 编辑文件设置服务相关的帐号密码  
-
-在`salt_api.py` 和 `zabbixapi.py` 里使用`os`模块获取配置文件路径时，发现`ConfigParser`模块无法读取配置文件。自测`Bug`，尚未修复
 
 ### 项目组成
 - 主机管理

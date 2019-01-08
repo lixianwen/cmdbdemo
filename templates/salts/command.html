@@ -4,6 +4,7 @@
 {% block head %}
 <link href="{% static 'plugin/chosen.min.css' %}" rel="stylesheet" type="text/css" />
 <script src="{% static 'plugin/chosen.jquery.min.js' %}"></script>
+<script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
 <style>
   #result textarea {
     width: 700px;
@@ -11,29 +12,57 @@
     margin-top: 10px;
     display: none;
   }
+  #loading {
+    background: url({% static 'css/images/loading.gif' %}) no-repeat 10px;
+    line-height: 20px;
+    font-size: 16px;
+    color: #666;
+    text-indent: 40px;
+  }
 </style>
 <script>
     $(function () {
+        $("button").button();
+
+        $("form").ajaxForm({
+            type: "POST",
+            url: "{% url 'command' %}",
+            beforeSubmit: function (arr, form, options) {
+                $("button").button("disable");
+                $("#loading").dialog("open");
+            },
+            success: function (response, statusText, xhr, form) {
+                $("#loading").css("background", "url({% static 'css/images/checked.gif' %}) no-repeat 10px").html("提交成功...");
+                $("button").button("enable");
+                $("#test-result").show().text(response);
+                setTimeout(function () {
+                    $("#loading").dialog("close");
+                    $("form").resetForm();
+                    $("#loading").css("background", "url({% static 'css/images/loading.gif' %}) no-repeat 10px").html("命令执行中...");
+                }, 1000)
+            }
+        });
+  
         $("button").click(function () {
-            $.post(
-                "{% url 'command' %}", 
-                $("form").serialize(),
-                function (response) {
-                    $("#test-result").show().text(response)
-                }
-            ).fail(function (xhr, errorTxt, errorType) {
-                alert(xhr.status + ": " + errorType)
-            })
+            $("#test-result").html("");
+            $("form").submit()
         });
-        $(document).ajaxStart(function () {
-            $(".loading").show();
-        }).ajaxStop(function () {
-            $(".loading").hide();
-        });
+
+        $("#loading").dialog({
+            autoOpen: false,
+            draggable: false,
+            modal: true,
+            resizable: false,
+            width: 180,
+            height: 50
+        }).parent().find(".ui-widget-header").hide();
+
         $(".chosen-select").chosen({
             disable_search_threshold: 5,
             no_results_text: "没有该选项："
-        })
+        });
+
+        $("#menu").menu()
     })
 </script>
 {% endblock %}
@@ -52,12 +81,8 @@
         </div>
         <div id="result" class="container">
            <textarea id="test-result" wrap="hard"></textarea>
-           <span class="loading" style="display: none;">正在努力加载中....</span>
         </div>
     </div>
+    <div id="loading">命令执行中...</div>
 </div>
-<script src="{% static 'js/waves.js' %}"></script>
-<!-- App js -->
-<script src="{% static 'js/jquery.core.js' %}"></script>
-<script src="{% static 'js/jquery.app.js' %}"></script>
 {% endblock %}

@@ -9,7 +9,8 @@
             if (action == false) {
                 e.preventDefault()
             }
-        })
+        });
+        $("#menu").menu()
     })
 </script>
 {% endblock %}
@@ -53,8 +54,4 @@
         </div>
     </div>
 </div>
-<script src="{% static 'js/waves.js' %}"></script>
-<!-- App js -->
-<script src="{% static 'js/jquery.core.js' %}"></script>
-<script src="{% static 'js/jquery.app.js' %}"></script>
 {% endblock %}

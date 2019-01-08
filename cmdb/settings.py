@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 #read the config file
 c = ConfigParser(allow_no_value=True)
-c.read(os.path.join(os.path.abspath(BASE_DIR), 'cmdb.conf'))
+c.read(os.path.join(BASE_DIR, 'cmdb.conf'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/

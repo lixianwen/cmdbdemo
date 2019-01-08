@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import re
+import json
 from rest_framework import status
 from django.http import Http404
 from django.shortcuts import render
@@ -161,12 +162,11 @@ def listAsset(request):
     host = request.GET.get('host', '')
     env = request.GET.get('env', '')
     status = request.GET.get('status', '')
+    queryset = Asset.objects.all()
     idc_list = IDC.objects.all()
     ps_list = PhysicalServer.objects.all()
-    queryset = Asset.objects.all()
-    asset_list = Asset.objects.all()
     if aname:
-        queryset = queryset.filter(idc=IDC.objects.get(id=aname))
+        queryset = queryset.filter(idc_id=aname)
         if not queryset:
             asset_list = ''
     if atype:
@@ -174,7 +174,7 @@ def listAsset(request):
         if not queryset:
             asset_list = ''
     if host:
-        queryset = queryset.filter(host=PhysicalServer.objects.get(id=host))
+        queryset = queryset.filter(host_id=host)
         if not queryset:
             asset_list = ''
     if env:
@@ -248,6 +248,15 @@ def delAsset(request):
     as_id = request.GET.get('p', '')
     Asset.objects.get(id=as_id).delete()
     return HttpResponseRedirect(reverse('list'))
+
+@check_permission
+def hostname(request):
+    asset_list = Asset.objects.all()
+    hostname_list = list()
+    for i in asset_list:
+        hostname_list.append(i.hostname)
+    distinct_list = list(set(hostname_list))
+    return HttpResponse(json.dumps(distinct_list))
 
 class AssetViewSet(viewsets.ModelViewSet):
     '''

@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% block head %}
+    $(function () {
+        $("#menu").menu()
+    })
+{% endblock %}
 {% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% load widget_tweaks %}
@@ -58,8 +63,4 @@
         </div>
     </div>
 </div>
-<script src="{% static 'js/waves.js' %}"></script>
-<!-- App js -->
-<script src="{% static 'js/jquery.core.js' %}"></script>
-<script src="{% static 'js/jquery.app.js' %}"></script>
 {% endblock %}

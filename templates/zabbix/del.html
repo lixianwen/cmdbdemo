@@ -12,16 +12,18 @@
                 e.preventDefault()
             }
         });
+
         $(".chosen-select").chosen({
             no_results_text: "没有该选项："
-        })
+        });
+
+        $("#menu").menu()
     })
 </script>
 {% endblock %}
 {% block content %}
 {% include "sidebar.html" %}
 <div class="content-page">
-    <!-- Start content -->
     <div class="content">
         <div class="container">
             <h3>删除 zabbix agent</h3>
@@ -39,8 +41,4 @@
         </div>
     </div>
 </div>
-<script src="{% static 'js/waves.js' %}"></script>
-<!-- App js -->
-<script src="{% static 'js/jquery.core.js' %}"></script>
-<script src="{% static 'js/jquery.app.js' %}"></script>
 {% endblock %}

@@ -4,6 +4,7 @@
 {% block head %}
 <link href="{% static 'plugin/chosen.min.css' %}" rel="stylesheet" type="text/css" />
 <script src="{% static 'plugin/chosen.jquery.min.js' %}"></script>
+<script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
 <style>
   #result textarea {
     width: 450px;
@@ -18,10 +19,39 @@
   #_jid{
     display: none;
   }
+  .progress {
+    position:relative;
+    width:300px;
+    border: 1px solid #ddd;
+    padding: 1px;
+    border-radius: 3px;
+  }
+  .bar {
+    background-color: #B4F5B4;
+    width:0%;
+    height:20px;
+    border-radius: 3px;
+  }
+  .percent {
+    position:absolute;
+    top:3px;
+    left:48%;
+    display:inline-block;
+    line-height: 15px;
+  }
+  #loading {
+    background: url({% static 'css/images/loading.gif' %}) no-repeat 10px;
+    line-height: 20px;
+    font-size: 16px;
+    color: #666;
+    text-indent: 40px;
+  }
 </style>
 <script>
     $(function () {
-        $("button#push").click(function () {
+        $("#push").button();
+
+        $("#push").click(function () {
            $.ajax({
                type: "POST",
                url: "{% url 'push' %}",
@@ -32,7 +62,18 @@
                    csrfmiddlewaretoken: $("#push_form input[name=csrfmiddlewaretoken]").val(),
               }, true),
                dataType: "json",
+               beforeSend: function(jqXHR, settings) {
+                   $("#push").button("disable");
+                   $("#loading").dialog("open");
+               },
                success: function (response) {
+                   $("#loading").css("background", "url({% static 'css/images/checked.gif' %}) no-repeat 10px").html("推送成功...");
+                   $("#push").button("enable");
+                   setTimeout(function () {
+                       $("#loading").dialog("close");
+                       $("#push_form").resetForm();
+                       $("#loading").css("background", "url({% static 'css/images/loading.gif' %}) no-repeat 10px").html("文件推送中...");
+                    }, 1000);
                    return response
                }
             }).then(function (data) {
@@ -58,49 +99,105 @@
                 };
             })
         });
-        $(document).ajaxStart(function () {
-            $(".loading").show();
-        }).ajaxStop(function () {
-            $(".loading").hide();
-        });
+
+        $("#loading").dialog({
+            autoOpen: false,
+            draggable: false,
+            modal: true,
+            resizable: false,
+            width: 180,
+            height: 50
+        }).parent().find(".ui-widget-header").hide();
+
         $(".chosen-select").chosen({
             disable_search_threshold: 5,
             no_results_text: "没有该选项：",
-        }) 
+        });
+
+        $("#menu").menu();
+
+        var bar = $(".bar");
+        var percent = $(".percent");
+        var stat = $("#status");
+
+        $("#uploadFileForm").ajaxForm({
+            beforeSend: function () {
+                stat.empty();
+                var percentVal = "0%";
+                bar.width(percentVal);
+                percent.text(percentVal)
+            },
+            beforeSubmit: function (arr, form, options) {
+                $("#uploadFile").dialog("widget").find("button").eq(1).button("disable")
+            },
+            uploadProgress: function (event, position, total, percentComplete) {
+                var percentVal = percentComplete + "%";
+                bar.width(percentVal);
+                percent.text(percentVal)
+            },
+            success: function (response) {
+                $("#uploadFile").dialog("widget").find("button").eq(1).button("enable");
+                var percentVal = "100%";
+                bar.width(percentVal);
+                percent.text(percentVal);
+                stat.html(response);
+                setTimeout(function () {
+                    $("#uploadFile").dialog("close");
+                    window.location.reload()
+                }, 3000)
+            },
+            resetForm: true
+        });
+        
+        $("#uploadFile").dialog({
+            autoOpen: false,
+            buttons: [
+                {
+                 text: "上传",
+                 click: function () {
+                     $("#uploadFileForm").submit()
+                 }
+                },
+                {
+                 text: "取消",
+                 click: function () {
+                     $(this).dialog("close");
+                 }
+                }
+            ],
+            closeText: "关闭",
+            draggable: false,
+            width: 400,
+            height: 300,
+            resizable: false,
+            title: "文件上传",
+            modal: true
+        });       
+
+        $("#upload").click(function () {
+            $("#uploadFile").dialog("open")
+        })
     })
 </script>
 {% endblock %}
 {% block content %}
 {% include "sidebar.html" %}
-<div class="content-page">
-    <!-- Start content -->
-    <div class="content">
-        <div class="container">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
-                上传文件
-            </button>
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h3 class="modal-title" id="myModalLabel">上传文件</h3>
-                        </div>
-                        <div class="modal-body">
-                            <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}" role="form">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                {{ form }}
-                                <div style="margin-top: 10px;">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                                    <button type="submit" class="btn btn-primary">上传</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+<div class="container">
+    <button id="upload" type="button" class="btn btn-info">文件上传</button>
+    <div id="uploadFile">
+        <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}" role="form" id="uploadFileForm">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form }}
             </div>
+        </form>
+        <div class="progress">
+            <div class="bar"></div>
+            <div class="percent">0%</div>
         </div>
+        <div id="status"></div>
+    </div>
+</div>
         <div class="container">
             <h3>文件分发</h3>
             <form class="form-horizontal pushform" role="form" id="push_form">
@@ -134,7 +231,6 @@
                 </div>
                 <button id="push" type="button" class="btn btn-primary">推送</button>
             </form>
-            <span class="loading" style="display: none;">正在努力推送中....</span>
         </div>
         <p class="tip"><p>
         <div id="result" class="container">
@@ -149,10 +245,5 @@
                 </div>
             </form>
         </div>
-    </div>
-</div>
-<script src="{% static 'js/waves.js' %}"></script>
-<!-- App js -->
-<script src="{% static 'js/jquery.core.js' %}"></script>
-<script src="{% static 'js/jquery.app.js' %}"></script>
+    <div id="loading">文件推送中...</div>
 {% endblock %}

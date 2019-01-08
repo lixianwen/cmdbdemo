@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^add/$', addAsset, name='add'),
     url(r'^edit/$', editAsset, name='edit'),
     url(r'^del/$', delAsset, name='del'),
+    url(r'^hostname/$', hostname, name='hostname'),
     url(r'^docs/', include_docs_urls(
                             title='Asset API Documentation', 
                             description='This viewset automatically provides `list`, `create`, `retrieve`, `update` and `destroy` actions',
