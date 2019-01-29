@@ -2,8 +2,8 @@
 {% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
-<link href="{% static 'plugin/chosen.min.css' %}" rel="stylesheet" type="text/css" />
-<script src="{% static 'plugin/chosen.jquery.min.js' %}"></script>
+<link href="https://cdn.bootcss.com/zui/1.8.1/lib/chosen/chosen.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.bootcss.com/zui/1.8.1/lib/chosen/chosen.min.js"></script>
 <script>
     $(function () {
         $("form").submit(function (e) {
@@ -15,30 +15,44 @@
 
         $(".chosen-select").chosen({
             no_results_text: "没有该选项："
-        });
-
-        $("#menu").menu()
+        })
     })
 </script>
 {% endblock %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
 {% block content %}
-{% include "sidebar.html" %}
-<div class="content-page">
-    <div class="content">
-        <div class="container">
-            <h3>删除 zabbix agent</h3>
-            <form method="post" action="" role="form">
-                {% csrf_token %}
-                <div class="form-group">
-                    <select name="host_id" multiple class="form-control chosen-select" data-placeholder="选择一台或多台Agent" size="10">
-                         {% for host in host_list %}
-                             <option value="{{ host.hostid }}">{{ host.host }}</option>
-                         {% endfor %}
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-danger">删除</button>
-            </form>
+<div class="container">
+  <div class="left">
+    {% include "sidebar.html" %}
+  </div>
+
+  <div class="right">
+    <form method="post" action="" role="form" class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2"></label>
+        <div class="col-md-6 col-sm-10">
+          <h3>删除 zabbix agent</h3>
         </div>
-    </div>
+      </div>
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="id-agent" class="col-sm-2">Agent</label>
+        <div class="col-md-6 col-sm-10">
+          <select name="host_id" multiple class="form-control chosen-select" data-placeholder="选择一台或多台Agent" size="10" id="id-agent">
+            {% for host in host_list %}
+              <option value="{{ host.hostid }}">{{ host.host }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-danger">删除</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

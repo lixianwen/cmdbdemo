@@ -2,8 +2,10 @@
 {% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
-<link href="{% static 'plugin/chosen.min.css' %}" rel="stylesheet" type="text/css" />
-<script src="{% static 'plugin/chosen.jquery.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.min.css' %}"/>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+<link href="https://cdn.bootcss.com/zui/1.8.1/lib/chosen/chosen.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.bootcss.com/zui/1.8.1/lib/chosen/chosen.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
 <style>
   #result textarea {
@@ -22,18 +24,18 @@
 </style>
 <script>
     $(function () {
-        $("button").button();
+        $("#command-button").button();
 
         $("form").ajaxForm({
             type: "POST",
             url: "{% url 'command' %}",
             beforeSubmit: function (arr, form, options) {
-                $("button").button("disable");
+                $("#command-button").button("disable");
                 $("#loading").dialog("open");
             },
             success: function (response, statusText, xhr, form) {
                 $("#loading").css("background", "url({% static 'css/images/checked.gif' %}) no-repeat 10px").html("提交成功...");
-                $("button").button("enable");
+                $("#command-button").button("enable");
                 $("#test-result").show().text(response);
                 setTimeout(function () {
                     $("#loading").dialog("close");
@@ -43,7 +45,7 @@
             }
         });
   
-        $("button").click(function () {
+        $("#command-button").click(function () {
             $("#test-result").html("");
             $("form").submit()
         });
@@ -59,30 +61,44 @@
 
         $(".chosen-select").chosen({
             disable_search_threshold: 5,
-            no_results_text: "没有该选项："
-        });
-
-        $("#menu").menu()
+            no_results_text: "没有该选项：",
+        })
     })
 </script>
 {% endblock %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
 {% block content %}
-{% include "sidebar.html" %}
-<div class="content-page">
-    <!-- Start content -->
-    <div class="content">
-        <div class="container">
+<div class="container">
+  <div class="left">
+    {% include "sidebar.html" %}
+  </div>
+
+  <div class="right">
+    <div id="form-salt-command">
+      <form class="form-horizontal" role="form">
+        <div class="form-group">
+          <label class="col-sm-2"></label>
+          <div class="col-md-6 col-sm-10">
             <h3>saltstack 客户端</h3>
-            <form class="form-horizontal" role="form">
-                {% csrf_token %}
-                {% include "forms.html" %}
-                <button type="button" class="btn btn-primary">Submit</button>
-            </form>
+          </div>
         </div>
-        <div id="result" class="container">
-           <textarea id="test-result" wrap="hard"></textarea>
+        {% csrf_token %}
+        {% include "forms.html" %}
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" class="btn btn-primary" id="command-button">Submit</button>
+          </div>
         </div>
+      </form>
     </div>
+
+    <div id="result">
+      <textarea id="test-result" wrap="hard"></textarea>
+    </div>
+
     <div id="loading">命令执行中...</div>
+  </div>
 </div>
 {% endblock %}

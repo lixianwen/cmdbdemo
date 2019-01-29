@@ -2,32 +2,32 @@
 <html>
 <head>
     <meta charset="utf8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 响应式设计标签 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- ZUI 标准版压缩后的 CSS 文件 -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/zui/1.8.1/css/zui.min.css">
+
+    <!-- ZUI Javascript 依赖 jQuery -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/zui/1.8.1/lib/jquery/jquery.js"></script>
     {% load static %}
-    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css"/>
     <script src="{% static 'js/base64.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js"></script>
     <style>
-        .login-container {
-          margin-top: 150px;
+        .container {
+          max-width: 450px;
+          margin-top: 100px;
+        }
+        .labeltip {
+          margin-left: 20px;
         }
 
-        .login-box {
-          width: 450px;
-          margin-left: auto;
-          margin-right: auto;
+        h3 {
+          text-align: center;
         }
-
-        .labeltip {margin-left: 20px;}
-
-        h3 {text-align: center;}
-
-        button {width: 100%;}
 
         #ImgVerifyCode {
-          margin: 5px;
-          padding: 2px;
           border: 1px solid #ccc;
           border-radius: 5px;
         }
@@ -115,55 +115,69 @@
                         required: "必填字段",
                         remote: "验证码不正确"
                     }
-                },
-                success: "valid"
+                }
             })
         })
     </script>
 </head>
 <body>
-    {% include "message.html" %}
-    {% load widget_tweaks %}
-    <div class="login-container">
-        <div class="login-box">
-           <div class="panel panel-primary">
-               <div class="panel-heading">
-                   <h3 class="panel-title">登录</h3>
-               </div>
-               <div class="panel-body">
-                   <form method="post" action="" class="form-horizontal" role="form">
-                       {% csrf_token %}
-                       {% for field in form %}
-                           <div class="form-group">
-                               {% ifequal field.id_for_label "id_remember" %}
-                                   <!-- <label for="{{ field.id_for_label }}" class="col-md-offset-2 control-label"> -->
-                                   <label for="{{ field.id_for_label }}" class="control-label labeltip">
-                                   {{ field }}
-                                   <span>{{ field.label }}</span>
-                                   </label>
-                               {% else %}
-                                   <label for="{{ field.id_for_label }}" class="col-md-2 control-label">{{ field.label }}</label>
-                                   <div class="col-md-10">
-                                       {{ field|attr:"class:form-control" }}
-                                       {% ifequal field.id_for_label "id_verification_code" %}
-                                           <img src="{% url 'image' %}" alt="验证码" id="ImgVerifyCode"/>
-                                       {% endifequal %}
-                                       {% if field.errors %}
-                                           <div class="{% if field.errors %} help-block {% endif %}">
-                                               {% for error in field.errors %}
-                                                  <span class="text-danger">{{ error }}</span>
-                                               {% endfor %}
-                                          </div>
-                                      {% endif %}
-                                   </div>
-                               {% endifequal %}
-                           </div>
-                       {% endfor %}
-                       <button class="btn btn-primary" type="submit">提交</button>
-                   </form>
-               </div>
-           </div>
-        </div>
+{% include "message.html" %}
+{% load widget_tweaks %}
+<div class="container">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">登录</h3>
     </div>
+    <div class="panel-body">
+      <form method="post" action="" class="form-horizontal" role="form">
+        {% csrf_token %}
+        {% for field in form %}
+          {% ifequal field.id_for_label "id_remember" %}
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                  <label>
+                    {{ field }} {{ field.label }}
+                  </label>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            {% ifequal field.id_for_label "id_verification_code" %}
+              <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="col-sm-2 control-label">{{ field.label }}</label>
+                <div class="col-sm-6">
+                  {{ field|attr:"class:form-control" }}
+                </div>
+                <div class="col-sm-4">
+                  <img src="{% url 'image' %}" alt="验证码" id="ImgVerifyCode"/>
+                </div>
+              </div>
+            {% else %}
+              <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="col-sm-2 control-label">{{ field.label }}</label>
+                <div class="col-md-6 col-sm-10">
+                  {{ field|attr:"class:form-control" }}
+                  {% if field.errors %}
+                    <div class="{% if field.errors %} help-block {% endif %}">
+                      {% for error in field.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endifequal %}
+          {% endifequal %}
+        {% endfor %}
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">登录</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div> 
+</div> 
 </body>
 </html>

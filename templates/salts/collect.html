@@ -2,6 +2,8 @@
 {% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.min.css' %}"/>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
 <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
 <style>
   #result textarea {
@@ -20,19 +22,19 @@
 </style>
 <script>
     $(function () {
-        $("button").button();
+        $("#collect-button").button();
 
         $("form").ajaxForm({
             type: "POST",
             url: "{% url 'collect' %}",
             dataType: "json",
             beforeSubmit: function (arr, form, options) {
-                $("button").button("disable");
+                $("#collect-button").button("disable");
                 $("#loading").dialog("open");
             },
             success: function (response, statusText, xhr, form) {
                 $("#loading").css("background", "url({% static 'css/images/checked.gif' %}) no-repeat 10px").html("提交成功...");
-                $("button").button("enable");
+                $("#collect-button").button("enable");
                 $.each(response, function(index, value) {
                     $("#test-result").text($("#test-result").text() + index + ": " + value + "\n");
                 });
@@ -45,7 +47,7 @@
             }
         });
 
-        $("button").click(function () {
+        $("#collect-button").click(function () {
             $("#test-result").html("");
             $("form").submit()
         });
@@ -57,35 +59,48 @@
             resizable: false,
             width: 180,
             height: 50
-        }).parent().find(".ui-widget-header").hide();
-
-        $("#menu").menu()
+        }).parent().find(".ui-widget-header").hide()
     })
 </script>
 {% endblock %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
 {% block content %}
-{% include "sidebar.html" %}
-<div class="content-page">
-    <!-- Start content -->
-    <div class="content">
-        <div class="container">
+<div class="container">
+  <div class="left">
+    {% include "sidebar.html" %}
+  </div>
+
+  <div class="right">
+    <div id="form-salt-collect">
+      <form class="form-horizontal" role="form">
+        <div class="form-group">
+          <label class="col-sm-2"></label>
+          <div class="col-md-6 col-sm-10">
             <h3>saltstack 客户端</h3>
-            <form class="form-horizontal" role="form">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="_ip" class="col-md-2 control-label">IP地址</label>
-                    <div class="col-md-10">
-                        <input id="_ip" type="text" required name="ip" class="form-control">
-                    </div>
-                </div>
-                <button type="button" class="btn btn-info">执行收集</button>
-            </form>
+          </div>
         </div>
-        <div id="result" class="container">
-           <textarea id="test-result" wrap="hard"></textarea>
-           <div><a class="btn btn-success" href="{% url 'add' %}" target="_blank" style="margin-top: 5px;">添加到资产列表</a></div>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="_ip" class="col-sm-2 required">IP地址</label>
+          <div class="col-md-6 col-sm-10">
+            <input id="_ip" type="text" required name="ip" class="form-control">
+          </div>
         </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" class="btn btn-primary" id="collect-button">执行收集</button>
+          </div>
+        </div>
+      </form>
     </div>
+
+    <div id="result">
+      <textarea id="test-result" wrap="hard"></textarea>
+    </div>
+
     <div id="loading">命令执行中...</div>
+  </div>
 </div>
 {% endblock %}

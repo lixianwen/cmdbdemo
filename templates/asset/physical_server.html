@@ -9,49 +9,55 @@
             if (action == false) {
                 e.preventDefault()
             }
-        });
-        $("#menu").menu()
+        })
     })
 </script>
 {% endblock %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
 {% block content %}
-{% include "sidebar.html" %}
-<div class="content-page">
-    <!-- Start content -->
-    <div class="content">
-        <div class="table-responsive">
-        <table class="table table-hover table-bordered">
-            <caption>物理服务器详细信息</caption>
-            <thead>
-                <tr>
-                    <th>厂商</th>
-                    <th>型号</th>
-                    <th>序列号</th>
-                    <th>IP</th>
-                    <th>CPU</th>
-                    <th>内存</th>
-                    <th>硬盘</th>
-                    <th>网卡数量</th>
-                    <th>备注</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            {% for ps in ps_list %}
-                <tr>
-                    <td>{{ ps.manufacturer }}</td>
-                    <td>{{ ps.model }}</td>
-                    <td>{{ ps.sn }}</td>
-                    <td>{{ ps.ip }}</td>
-                    <td>{{ ps.cpu }}</td>
-                    <td>{{ ps.memory }}</td>
-                    <td>{{ ps.disk }}</td>
-                    <td>{{ ps.nic_num }}</td>
-                    <td>{{ ps.comment }}</td>
-                    <td class="danger"><a href="{% url 'edit_ps' %}?p={{ ps.id }}">编辑</a> <a class="delete" href="{% url 'del_ps' %}?p={{ ps.id }}">删除</a></td>
-                </tr>
-            {% endfor %}    
-        </table>
-        </div>
+<div class="container">
+  <div class="left">
+    {% include "sidebar.html" %}
+  </div>
+
+  <div class="right">
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-auto">
+        <caption>物理服务器详细信息</caption>
+        <thead>
+          <tr>
+            <th>厂商</th>
+            <th>型号</th>
+            <th>序列号</th>
+            <th>IP</th>
+            <th>CPU</th>
+            <th>内存</th>
+            <th>硬盘</th>
+            <th>网卡数量</th>
+            <th>备注</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ps in ps_list %}
+            <tr>
+              <td>{{ ps.manufacturer }}</td>
+              <td>{{ ps.model }}</td>
+              <td>{{ ps.sn }}</td>
+              <td>{{ ps.ip }}</td>
+              <td>{{ ps.cpu }}</td>
+              <td>{{ ps.memory }}</td>
+              <td>{{ ps.disk }}</td>
+              <td>{{ ps.nic_num }}</td>
+              <td>{{ ps.comment }}</td>
+              <td class="action"><a href="{% url 'edit_ps' %}?p={{ ps.id }}" class="btn btn-info btn-sm">编辑</a> <a href="{% url 'del_ps' %}?p={{ ps.id }}" class="delete btn btn-danger btn-sm">删除</a></td>
+            </tr>
+          {% endfor %}   
+        </tbody> 
+      </table>
     </div>
+  </div>
 </div>
 {% endblock %}

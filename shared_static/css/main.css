@@ -1,10 +1,6 @@
-body {
-  font-family: Serif, Sans-serif;
-  font-size: 100%;
-}
-
-.search {
-  float: right;
+/*--全局样式---*/
+.container {
+  max-width: 100%;
 }
 
 p.tip span {
@@ -12,16 +8,53 @@ p.tip span {
   color:#ff9955;
 }
 
-#menu-box {
+td {
+  text-align: center;
+}
+
+/*--顶部导航栏---*/
+#global-nav .navbar {
+  margin-bottom: 10px;
+}
+
+/*--侧边导航栏---*/
+.left .sidebar {
+  padding: 0;
+  margin: 0;
+  float: left;
+}
+
+.sidebar .menu {
   width: 200px;
-  height: 100%;
 }
 
-#menu a {
-  text-decoration: none;
+.footer p {
+  border-top: 1px solid #ccc;
+  padding: 5px 0;
 }
 
-.content {
+
+/*--右边内容区---*/
+.right {
   margin-left: 250px;
-  margin-right: 30px;
+}
+
+.form-horizontal .form-group::after, .panel-body::after, .row::after {
+  clear: none;
+}
+
+.form-group {
+  height: 40px
+}
+
+textarea.form-control {
+  height: 90px;
+}
+
+.row {
+  margin-bottom: 15px;
+}
+
+#upload {
+  width: 100px;
 }

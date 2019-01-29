@@ -1,66 +1,73 @@
 {% extends "base.html" %}
-{% block head %}
-    $(function () {
-        $("#menu").menu()
-    })
-{% endblock %}
-{% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% load widget_tweaks %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
 {% block content %}
-{% include "sidebar.html" %}
-<div class="content-page">
-    <!-- Start content -->
-    <div class="content">
-        <div class="container">
-            <div class="panel-group" id="tip">
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <a href="#tips" data-toggle="collapse" data-parent="#tip">
-                                查看提示
-                            </a>
-                        </h3>
-                    </div>
-                    <div id="tips" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <p class="tip"><span>如果系统为centos 6，点击安装后需要登录服务器手动执行/usr/local/sbin/init_salt.sh</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <h3>安装saltstack客户端</h3>
-            <form method="post" action="" class="form-horizontal" role="form">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="{{ form.ip.id_for_label }}" class="col-md-2 control-label">{{ form.ip.label|upper }}</label>
-                    <div class="col-md-10">
-                        {{ form.ip|attr:"class:form-control" }}
-                        {% if form.ip.errors %}
-                            <div class="{% if form.ip.errors %} help-block {% endif %}">
-                                {% for error in form.ip.errors %}
-                                    <span class="text-danger">{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        {% if form.ip.help_text %}
-                            <span class="help-block">{{ form.ip.help_text|safe }}</span>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-2 control-label">{{ form.release.label }}</label>
-                    <div class="col-md-10">
-                        <ul class="list-inline">
-                            {% for radio in form.release %}
-                                <li>{{ radio }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">点击安装</button>
-            </form>
+<div class="container">
+  <div class="left">
+    {% include "sidebar.html" %}
+  </div>
+
+  <div class="right">
+    <div class="panel-group" id="tip">
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            <a href="#tips" data-toggle="collapse" data-parent="#tip">查看提示</a>
+          </h3>
         </div>
+        <div id="tips" class="panel-collapse collapse">
+          <div class="panel-body">
+            <p class="tip"><span>如果系统为centos 6，点击安装后需要登录服务器手动执行/usr/local/sbin/init_salt.sh</span></p>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div id="form-dalt-install">
+      <form method="post" action="" class="form-horizontal" role="form">
+        <div class="form-group">
+          <label class="col-sm-2"></label>
+          <div class="col-md-6 col-sm-10">
+            <h3>安装saltstack客户端</h3>
+          </div>
+        </div>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ form.ip.id_for_label }}" class="col-sm-2">{{ form.ip.label|upper }}</label>
+          <div class="col-md-6 col-sm-10">
+            {{ form.ip|attr:"class:form-control" }}
+            {% if form.ip.errors %}
+              <div class="{% if form.ip.errors %} help-block {% endif %}">
+                {% for error in form.ip.errors %}
+                  <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if form.ip.help_text %}
+              <span class="help-block">{{ form.ip.help_text|safe }}</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2">{{ form.release.label }}</label>
+          <div class="col-md-6 col-sm-10">
+            {% for radio in form.release %}
+              <label for="{{ radio.id_for_label }}" class="checkbox-inline">
+                {{ radio.tag }} {{ radio.choice_label }}
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">点击安装</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}

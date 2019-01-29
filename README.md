@@ -1,5 +1,5 @@
 # 一个简单的CMDB Demo
-###### 前端使用bootstrap、javascript、jquery和jquery ui
+###### 前端使用[zui框架](http://zui.sexy/)、javascript、jquery和jquery ui
 ###### 后端使用python、Django框架 和 Django Rest 框架 还有一些优秀的第三方包，例如 [`django-oauth-toolkit`](https://django-oauth-toolkit.readthedocs.io/en/latest/index.html) 和 [`django-widget-tweaks`](https://pypi.org/project/django-widget-tweaks/)
 
 ### 开发环境：
@@ -37,8 +37,6 @@ python 2.7.5
 
 #### 4. Asset API
 使用[Django REST framework](https://www.django-rest-framework.org/) 开发的API，支持检索所有主机（分页显示，每页5条记录）、检索单个主机、创建主机、更新主机和删除主机。restful风格。  
-
-[API 参考文档](http://112.90.228.171/asset/docs/) 
 
 其他特性：
 - 身份验证和权限检查基于`oauth2`

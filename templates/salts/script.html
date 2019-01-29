@@ -2,8 +2,10 @@
 {% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
-<link href="{% static 'plugin/chosen.min.css' %}" rel="stylesheet" type="text/css" />
-<script src="{% static 'plugin/chosen.jquery.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.min.css' %}"/>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+<link href="https://cdn.bootcss.com/zui/1.8.1/lib/chosen/chosen.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.bootcss.com/zui/1.8.1/lib/chosen/chosen.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
 <style>
   #result textarea {
@@ -11,10 +13,6 @@
     height: 200px;
     margin-top: 10px;
     display: none;
-  }
-  p.tip span {
-    font-weight:bold;
-    color:#ff9955;
   }
   #_jid{
     display: none;
@@ -97,12 +95,6 @@
                     })
                 }
             });
-
-//            $(document).ajaxStart(function () {
-//                $(".loading").show();
-//            }).ajaxStop(function () {
-//                $(".loading").hide();
-//            })
         });
 
         $("#loading").dialog({
@@ -118,8 +110,6 @@
             disable_search_threshold: 5,
             no_results_text: "没有该选项：",
         });
-
-        $("#menu").menu();
 
         var bar = $(".bar");
         var percent = $(".percent");
@@ -185,64 +175,88 @@
     })
 </script>
 {% endblock %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
 {% block content %}
-{% include "sidebar.html" %}
 <div class="container">
-    <button id="upload" type="button" class="btn btn-info">文件上传</button>
-    <div id="uploadFile">
-        <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}" role="form" id="uploadFileForm">
-            {% csrf_token %}
-            <div class="form-group">
-                {{ upload_form }}
-            </div>
-        </form>
-        <div class="progress">
-            <div class="bar"></div>
-            <div class="percent">0%</div>
-        </div>
-        <div id="status"></div>
+  <div class="left">
+    {% include "sidebar.html" %}
+  </div>
+
+  <div class="right">
+    <div class="row">
+      <label class="col-sm-2"></label>
+      <button id="upload" type="button" class="btn btn-info col-sm-1"><i class="icon icon-cloud-upload"></i> 文件上传</button>
+      <div class="col-md-6 col-sm-9"></div>
     </div>
-</div>
-        <div class="container">
+    <div id="uploadFile">
+      <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}" role="form" id="uploadFileForm">
+        {% csrf_token %}
+        <div class="form-group">
+          {{ upload_form }}
+        </div>
+      </form>
+      <div class="progress">
+        <div class="bar"></div>
+        <div class="percent">0%</div>
+      </div>
+      <div id="status"></div>
+    </div>
+
+    <div id="form-salt-script">
+      <form class="form-horizontal" role="form" id="execute_form">
+        <div class="form-group">
+          <label class="col-sm-2"></label>
+          <div class="col-md-6 col-sm-10">
             <h3>执行脚本</h3>
-            <form class="form-horizontal" role="form" id="execute_form">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="select_host" class="col-md-2 control-label">Minion</label>
-                    <div class="col-md-10">
-                        <select id="select_host" name="host" multiple class="form-control chosen-select" data-placeholder="选择一台或多台主机">
-                            {% for asset in asset_list %}
-                                <option value="{{ asset.id }}">{{ asset }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="select_script" class="col-md-2 control-label">选择文件</label>
-                    <div class="col-md-10">
-                        <select name="script" id="select_script" class="form-control chosen-select">
-                            <option value="" selected>------</option>
-                            {% for file in file_list %}
-                                <option value="{{ file.filename }}">{{ file.filename }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <button id="excute" type="button" class="btn btn-primary">执行</button>
-            </form>
+          </div>
         </div>
-        <p class="tip"><p>
-        <div id="result" class="container">
-           <textarea id="test-result" wrap="hard"></textarea>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="select_host" class="col-sm-2">Minion</label>
+          <div class="col-md-6 col-sm-10">
+            <select id="select_host" name="host" multiple class="form-control chosen-select" data-placeholder="选择一台或多台主机">
+              {% for asset in asset_list %}
+                <option value="{{ asset.id }}">{{ asset }}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
-        <div id="hiddenBox" class="container">
-            <form role="form" id="hidden">
-                {% csrf_token %}
-                <div class="form-group">
-                    <!-- <label for="_jid">任务编号</label> -->
-                    <input id="_jid" type="text" required name="jid" class="form-control">
-                </div>
-            </form>
+        <div class="form-group">
+          <label for="select_script" class="col-sm-2">选择文件</label>
+          <div class="col-md-6 col-sm-10">
+            <select name="script" id="select_script" class="form-control chosen-select">
+              <option value="" selected>------</option>
+              {% for file in file_list %}
+                <option value="{{ file.filename }}">{{ file.filename }}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button id="excute" type="button" class="btn btn-primary">执行</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div id="result">
+      <textarea id="test-result" wrap="hard"></textarea>
+    </div>
+
+    <div id="hiddenBox">
+      <form role="form" id="hidden">
+        {% csrf_token %}
+        <div class="form-group">
+          <!-- <label for="_jid">任务编号</label> -->
+          <input id="_jid" type="text" required name="jid" class="form-control">
+        </div>
+      </form>
+    </div>
+
     <div id="loading">脚本执行中...</div>
+  </div>
+</div>
 {% endblock %}

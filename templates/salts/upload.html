@@ -47,26 +47,24 @@ $(function () {
             stat.html(response)
         },
         resetForm: true
-    });
-    $("#menu").menu()
+    })
 })
 </script>
 {% endblock %}
 {% block content %}
 {% include "sidebar.html" %}
-<div>
+<div class="container">
     <h3>上传文件</h3>
     <form method="post" enctype="multipart/form-data" action="">
         {% csrf_token %}
         {{ form }}
         <button type="submit">Submit</button>
     </form>
+    <div class="progress">
+        <div class="bar"></div>
+        <div class="percent">0%</div>
+    </div>
+    
+    <div id="status"></div>
 </div>
-
-<div class="progress">
-    <div class="bar"></div>
-    <div class="percent">0%</div>
-</div>
-
-<div id="status"></div>
 {% endblock %}

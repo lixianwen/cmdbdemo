@@ -2,31 +2,43 @@
 {% load static %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
-<link href="{% static 'plugin/chosen.min.css' %}" rel="stylesheet" type="text/css" />
-<script src="{% static 'plugin/chosen.jquery.min.js' %}"></script>
+<link href="https://cdn.bootcss.com/zui/1.8.1/lib/chosen/chosen.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.bootcss.com/zui/1.8.1/lib/chosen/chosen.min.js"></script>
 <script>
 $(function () {
     $(".chosen-select").chosen({
         disable_search_threshold: 5,
         no_results_text: "没有该选项：",
-    });
-
-    $("#menu").menu()
+        placeholder_text_multiple: "请选择模板",
+    })
 })
 </script>
 {% endblock %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
 {% block content %}
-{% include "sidebar.html" %}
-<div class="content-page">
-    <div class="content">
-        <div class="container">
-            <h3>添加 zabbix agent</h3>
-            <form method="post" action="" class="form-horizontal" role="form">
-                {% csrf_token %}
-                {% include "forms.html" %}
-                <button type="submit" class="btn btn-primary">添加</button>
-            </form>
+<div class="container">
+  <div class="left">
+    {% include "sidebar.html" %}
+  </div>
+
+  <div class="right">
+    <form method="post" action="" class="form-horizontal" role="form">
+      <div class="form-group">
+        <label class="col-sm-2"></label>
+        <div class="col-md-6 col-sm-10">
+          <h3>添加 zabbix agent</h3>
         </div>
-    </div>
+      </div>
+      {% csrf_token %}
+      {% include "forms.html" %}
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-primary">添加</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

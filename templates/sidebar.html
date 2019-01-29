@@ -1,71 +1,50 @@
-<div id="menu-box">
-    <ul id="menu">
-        <li>
-            <div><a href="{% url 'index' %}">仪盘表</a></div>
-        </li>
-        <li>
-            <div>IDC机房</div>
-            <ul>
-                <li>
-                    <div><a href="{% url 'idc' %}">机房信息</a></div>
-                </li>
-                <li>
-                    <div><a href="{% url 'add_idc' %}">增加机房</a></div>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <div>物理服务器</div>
-            <ul>
-                <li>
-                    <div><a href="{% url 'ps' %}">服务器列表</a></div>
-                </li>
-                <li>
-                    <div><a href="{% url 'add_ps' %}">增加服务器</a></div>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <div>资产管理</div>
-            <ul>
-                <li>
-                    <div><a href="{% url 'list' %}">资产列表</a></div>
-                </li>
-                <li>
-                    <div><a href="{% url 'add' %}">增加资产</a></div>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <div>saltstack</div>
-            <ul>
-                <li>
-                    <div><a href="{% url 'install' %}">安装客户端</a></div>
-                </li>
-                <li>
-                    <div><a href="{% url 'collect' %}">收集信息</a></div>
-                </li>
-                <li>
-                    <div><a href="{% url 'command' %}">执行命令</a></div>
-                </li>
-                <li>
-                    <div><a href="{% url 'push' %}">文件推送</a></div>
-                </li>
-                <li>
-                    <div><a href="{% url 'script' %}">执行脚本</a></div>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <div>zabbix</div>
-            <ul>
-                <li>
-                    <div><a href="{% url 'ADD' %}">添加主机</a></div>
-                </li>
-                <li>
-                    <div><a href="{% url 'delete' %}">删除主机</a></div>
-                </li>
-            </ul>
-        </li>
+<div class="sidebar">
+  <nav class="menu" data-ride="menu">
+    <ul id="treeMenu" class="tree tree-menu" data-ride="tree">
+      <li><a href="{% url 'index' %}"><i class="icon icon-home"></i>仪盘表</a></li>
+      <li>
+        <a href="javascript:void(0);"><i class="icon icon-play"></i>IDC机房</a>
+        <ul>
+          <li><a href="{% url 'idc' %}"><i class="icon icon-info-sign"></i>机房信息</a></li>
+          <li><a href="{% url 'add_idc' %}"><i class="icon icon-edit-sign"></i>增加机房</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="javascript:void(0);"><i class="icon icon-server"></i>物理服务器</a>
+        <ul>
+          <li><a href="{% url 'ps' %}"><i class="icon icon-info-sign"></i>服务器列表</a></li>
+          <li><a href="{% url 'add_ps' %}"><i class="icon icon-edit-sign"></i>增加服务器</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="javascript:void(0);"><i class="icon icon-server"></i>资产管理</a>
+        <ul>
+          <li><a href="{% url 'list' %}"><i class="icon icon-info-sign"></i>资产列表</a></li>
+          <li><a href="{% url 'add' %}"><i class="icon icon-edit-sign"></i>增加资产</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="javascript:void(0);"><i class="icon icon-play"></i>saltstack</a>
+        <ul>
+          <li><a href="{% url 'install' %}"><i class="icon icon-cogs"></i>安装客户端</a></li>
+          <li><a href="{% url 'collect' %}"><i class="icon icon-info-sign"></i>收集信息</a></li>
+          <li><a href="{% url 'command' %}"><i class="icon icon-angle-right"></i>执行命令</a></li>
+          <li><a href="{% url 'push' %}"><i class="icon icon-copy"></i>文件推送</a></li>
+          <li><a href="{% url 'script' %}"><i class="icon icon-angle-right"></i>执行脚本</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="javascript:void(0);"><i class="icon icon-play"></i>zabbix</a>
+        <ul>
+          <li><a href="{% url 'ADD' %}"><i class="icon icon-edit-sign"></i>添加主机</a></li>
+          <li><a href="{% url 'delete' %}"><i class="icon icon-warning-sign"></i>删除主机</a></li>
+        </ul>
+      </li>
     </ul>
+  </nav>
+  <footer>
+    <div class="footer">
+      <p class="text-muted small">版本 <span class="doc-version">0.1.0</span></p>
+    </div>
+  </footer>
 </div>
