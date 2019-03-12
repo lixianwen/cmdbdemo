@@ -208,7 +208,7 @@ $(function () {
               <td>{{ asset.get_env_display }}</td>
               <td>{{ asset.host }}</td>
               <td>{{ asset.comment }}</td>
-              <td class="action"><a href="{% url 'edit' %}?p={{ asset.id }}" class="btn btn-info btn-sm">编辑</a> <a class="delete btn btn-danger btn-sm" href="{% url 'del' %}?p={{ asset.id }}">删除</a></td>
+              <td class="action"><a href="{% url 'edit' asset.id %}" class="btn btn-info btn-sm">编辑</a> <a class="delete btn btn-danger btn-sm" href="{% url 'del' asset.id %}">删除</a></td>
             </tr>
           {% endfor %}  
         </tbody>  

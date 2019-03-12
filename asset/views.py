@@ -47,9 +47,8 @@ def addIDC(request):
     return render(request, 'asset/add_idc.html', locals())
 
 @permission_required('asset.change_idc')
-def editIDC(request):
-    idc_id = request.GET.get('p', '')
-    idc = IDC.objects.get(id=idc_id)
+def editIDC(request, pk):
+    idc = IDC.objects.get(id=pk)
     if request.method == 'POST':
         form = IdcForm(request.POST, instance=idc)
         front_idc = idc.name
@@ -66,9 +65,8 @@ def editIDC(request):
     return render(request, 'asset/edit_idc.html', locals())
 
 @permission_required('asset.delete_idc')
-def delIDC(request):
-    idc_id = request.GET.get('p', '')
-    IDC.objects.get(id=idc_id).delete()
+def delIDC(request, pk):
+    IDC.objects.get(id=pk).delete()
     return HttpResponseRedirect(reverse('idc'))
 
 @check_permission
@@ -90,9 +88,8 @@ def addPS(request):
     return render(request, 'asset/add_ps.html', locals())
 
 @permission_required('asset.change_physicalserver')
-def editPS(request):
-    ps_id = request.GET.get('p', '')
-    ps = PhysicalServer.objects.get(id=ps_id)
+def editPS(request, pk):
+    ps = PhysicalServer.objects.get(id=pk)
     if request.method == 'POST':
         form = PhysicalServerForm(request.POST, instance=ps)
         front_ps = ps.ip
@@ -110,9 +107,8 @@ def editPS(request):
     return render(request, 'asset/edit_ps.html', locals())
 
 @permission_required('asset.delete_physicalserver')
-def delPS(request):
-    ps_id = request.GET.get('p', '')
-    PhysicalServer.objects.get(id=ps_id).delete()
+def delPS(request, pk):
+    PhysicalServer.objects.get(id=pk).delete()
     return HttpResponseRedirect(reverse('ps'))
 
 def getPageList(totalPage, currentPage):
@@ -216,9 +212,8 @@ def addAsset(request):
     return render(request, 'asset/asset_add.html', locals())
 
 @permission_required('asset.change_asset')
-def editAsset(request):
-    asset_id = request.GET.get('p', '')
-    asset = Asset.objects.get(id=asset_id)
+def editAsset(request, pk):
+    asset = Asset.objects.get(id=pk)
     if request.method == 'POST':
         form = AssetForm(request.POST, instance=asset)
         front_ip1 = asset.ip
@@ -244,9 +239,8 @@ def editAsset(request):
     return render(request, 'asset/asset_edit.html', locals())
 
 @permission_required('asset.delete_asset')
-def delAsset(request):
-    as_id = request.GET.get('p', '')
-    Asset.objects.get(id=as_id).delete()
+def delAsset(request, pk):
+    Asset.objects.get(id=pk).delete()
     return HttpResponseRedirect(reverse('list'))
 
 @check_permission

@@ -52,7 +52,7 @@
               <td>{{ ps.disk }}</td>
               <td>{{ ps.nic_num }}</td>
               <td>{{ ps.comment }}</td>
-              <td class="action"><a href="{% url 'edit_ps' %}?p={{ ps.id }}" class="btn btn-info btn-sm">编辑</a> <a href="{% url 'del_ps' %}?p={{ ps.id }}" class="delete btn btn-danger btn-sm">删除</a></td>
+              <td class="action"><a href="{% url 'edit_ps' ps.id %}" class="btn btn-info btn-sm">编辑</a> <a href="{% url 'del_ps' ps.id %}" class="delete btn btn-danger btn-sm">删除</a></td>
             </tr>
           {% endfor %}   
         </tbody> 
