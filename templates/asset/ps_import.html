@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block msg %}{% include "message.html" %}{% endblock %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="left">
+    {% include "sidebar.html" %}
+  </div>
+
+  <div class="right">
+    <form method="post" action="" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="file" name="file" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="width: 200px;padding-bottom: 38px">
+      </div>
+      <button type="submit" class="btn btn-primary">上传</button>
+    </form>
+    <p class="help-block">注意：批量导入的Excel需使用规定格式模板. <a href="{% url 'tpl' tpl %}">下载模板</a></p>
+  </div>
+</div>
+{% endblock %}

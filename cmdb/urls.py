@@ -35,5 +35,6 @@ urlpatterns = [
     url(r'^verify/$', verify, name='verify'),
     url(r'^password/$', verify_password, name='password'),
     url(r'^accounts/login/$', login),
+    url(r'^tpl/(\w+.(xls|xlsx))$', tpl_download, name='tpl'),
 #    url(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]

@@ -2,23 +2,20 @@
 from __future__ import unicode_literals
 
 import re
-import json
-from rest_framework import status
-from django.http import Http404
-from django.shortcuts import render
+import xlrd
 from django.urls import reverse
 from cmdb.utils import validIPV4
 from django.contrib import messages
 from django.http import HttpResponse
-from rest_framework import viewsets
-from rest_framework import permissions
 from permission import check_permission
-from django.http import HttpResponseRedirect
 from rest_framework.response import Response
+from django.shortcuts import render, redirect
 from asset.serializers import AssetSerializer
 from models import IDC, PhysicalServer, Asset
 from rest_framework.exceptions import ValidationError
+from django.http import Http404, JsonResponse, redirect
 from forms import IdcForm, PhysicalServerForm, AssetForm
+from rest_framework import status, viewsets, permissions
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
@@ -38,10 +35,10 @@ def addIDC(request):
             name = form.cleaned_data['name']
             if IDC.objects.filter(name=name).exists():
                 messages.add_message(request, messages.ERROR, u'{0} 已经存在'.format(name))
-                return HttpResponseRedirect(reverse('add_idc'))
+                return redirect(reverse('add_idc'))
             new_idc = form.save()
             messages.add_message(request, messages.SUCCESS, u'{0} 添加成功'.format(name))
-            return HttpResponseRedirect(reverse('idc'))
+            return redirect(reverse('idc'))
     else:
         form = IdcForm()
     return render(request, 'asset/add_idc.html', locals())
@@ -57,17 +54,17 @@ def editIDC(request, pk):
             if front_idc != name:
                 if IDC.objects.filter(name=name).exists():
                     messages.add_message(request, messages.ERROR, u'{0} 已经存在'.format(name))
-                    return HttpResponseRedirect(reverse('idc'))
+                    return redirect(reverse('idc'))
             form.save()
             messages.add_message(request, messages.SUCCESS, u'{0} 修改成功'.format(name))
-            return HttpResponseRedirect(reverse('idc'))
+            return redirect(reverse('idc'))
     form = IdcForm(instance=idc)
     return render(request, 'asset/edit_idc.html', locals())
 
 @permission_required('asset.delete_idc')
 def delIDC(request, pk):
     IDC.objects.get(id=pk).delete()
-    return HttpResponseRedirect(reverse('idc'))
+    return redirect(reverse('idc'))
 
 @check_permission
 def physical_server(request):
@@ -82,7 +79,7 @@ def addPS(request):
         if form.is_valid():
             new_ps = form.save()
             messages.add_message(request, messages.SUCCESS, u'物理服务器添加成功')
-            return HttpResponseRedirect(reverse('ps'))
+            return redirect(reverse('ps'))
     else:
         form = PhysicalServerForm()
     return render(request, 'asset/add_ps.html', locals())
@@ -98,10 +95,10 @@ def editPS(request, pk):
             if front_ps != ip:
                 if PhysicalServer.objects.filter(ip=ip).exists():
                     messages.add_message(request, messages.ERROR, u'IP: {0} 已经存在'.format(ip))
-                    return HttpResponseRedirect(reverse('ps'))
+                    return redirect(reverse('ps'))
             form.save()
             messages.add_message(request, messages.SUCCESS, u'物理服务器修改成功')
-            return HttpResponseRedirect(reverse('ps'))
+            return redirect(reverse('ps'))
     else:
         form = PhysicalServerForm(instance=ps)
     return render(request, 'asset/edit_ps.html', locals())
@@ -109,7 +106,50 @@ def editPS(request, pk):
 @permission_required('asset.delete_physicalserver')
 def delPS(request, pk):
     PhysicalServer.objects.get(id=pk).delete()
-    return HttpResponseRedirect(reverse('ps'))
+    return redirect(reverse('ps'))
+
+def ps_import(request):
+    if request.method == 'POST':
+        context = {
+            'status': 'success',
+            'message': u'导入成功'
+        }
+        ps_excel = request.FILES.get('file')
+        try:
+            t1 = xlrd.open_workbook(file_contents=ps_excel.file.read()).sheets()[0]
+        except:
+            context['status'] = 'field'
+            context['message'] = u'文件损坏或文件类型错误，不能读取文件内容'
+            messages.add_message(request, messages.ERROR, context['message'])
+            return redirect(reverse('ps_import'))
+        try:
+            if t1:
+                for row in xrange(1, t1.nrows):
+                    manufacturer, model, sn, ip, cpu, memory, disk, nic_num, comment = t1.row_values(row)
+                    PhysicalServer.objects.create(
+                        manufacturer=manufacturer, 
+                        model=model, 
+                        sn=sn, 
+                        ip=ip, 
+                        cpu=cpu,
+                        memory=memory,
+                        disk=disk,
+                        nic_num=int(nic_num),
+                        comment=comment)
+        except ValueError as e:
+            context['status'] = 'field'
+            context['message'] = u'第{0}行值类型错误（{1}），请修改后删除已导入成功的第1-{2}行，并重新上传'.format(row, e, row-1)
+            messages.add_message(request, messages.ERROR, context['message'])
+            return redirect(reverse('ps_import'))
+        messages.add_message(request, messages.SUCCESS, u'导入成功')
+        return redirect(reverse('ps'))
+    tpl = 'ps_tpl.xlsx'      # template for import
+    return render(request, 'asset/ps_import.html', {'tpl': tpl})
+
+def ps_export(request):
+    filename='export_ps.xlsx'
+    export(filename=filename, model=PhysicalServer)
+    return redirect(reverse('tpl', args=(filename,)))
 
 def getPageList(totalPage, currentPage):
     '''
@@ -183,6 +223,8 @@ def listAsset(request):
             asset_list = ''
     if queryset:
         asset_list = queryset
+    else:
+        asset_list = Asset.objects.none()
     if request.method == 'POST':
         keyword = request.POST.get('keyword', '').strip()
         if keyword:
@@ -206,7 +248,7 @@ def addAsset(request):
         if form.is_valid():
             new_asset = form.save()
             messages.add_message(request, messages.SUCCESS, u'主机添加成功')
-            return HttpResponseRedirect(reverse('list'))
+            return redirect(reverse('list'))
     else:
         form = AssetForm()
     return render(request, 'asset/asset_add.html', locals())
@@ -225,15 +267,15 @@ def editAsset(request, pk):
                 if front_ip1 != ip1:
                     if Asset.objects.filter(ip=ip1).exists():
                         messages.add_message(request, messages.ERROR, u'IP: {0} 已经存在'.format(ip1))
-                        return HttpResponseRedirect(reverse('list'))
+                        return redirect(reverse('list'))
             if ip2:
                 if front_ip2 != ip2:
                     if Asset.objects.filter(other_ip=ip2).exists():
                         messages.add_message(request, messages.ERROR, u'IP: {0} 已经存在'.format(ip2))
-                        return HttpResponseRedirect(reverse('list'))
+                        return redirect(reverse('list'))
             form.save()
             messages.add_message(request, messages.SUCCESS, u'主机信息修改成功')
-            return HttpResponseRedirect(reverse('list'))
+            return redirect(reverse('list'))
     else:
         form = AssetForm(instance=asset)
     return render(request, 'asset/asset_edit.html', locals())
@@ -241,7 +283,7 @@ def editAsset(request, pk):
 @permission_required('asset.delete_asset')
 def delAsset(request, pk):
     Asset.objects.get(id=pk).delete()
-    return HttpResponseRedirect(reverse('list'))
+    return redirect(reverse('list'))
 
 @check_permission
 def hostname(request):
@@ -250,7 +292,7 @@ def hostname(request):
     for i in asset_list:
         hostname_list.append(i.hostname)
     distinct_list = list(set(hostname_list))
-    return HttpResponse(json.dumps(distinct_list))
+    return JsonResponse(distinct_list, safe=False)
 
 class AssetViewSet(viewsets.ModelViewSet):
     '''

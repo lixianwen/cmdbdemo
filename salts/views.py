@@ -11,12 +11,11 @@ from cmdb.utils import validIPV4
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib import messages
-from django.http import HttpResponse
 from subprocess import Popen, PIPE
-from django.http import HttpResponseRedirect
 from asset.models import IDC, PhysicalServer, Asset
 from django.contrib.auth.decorators import permission_required
 from forms import InstallForm, FileUploadForm, CommandForm, PushForm
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 
 # Create your views here.
 
@@ -46,8 +45,7 @@ def collect(request):
         p = Popen(shlex.split(cmd), stdout=PIPE)
         stdout = p.communicate()[0]
         response.update({'disk': stdout})
-        response = json.dumps(response)
-        return HttpResponse(response)
+        return JsonResponse(response)
     return render(request, 'salts/collect.html')
 
 @permission_required('auth.change_user')
@@ -120,8 +118,7 @@ def push(request):
             elif asset.other_ip:
                 jid2 = saltapi.pushFile(asset.other_ip, push_file, dest)
                 result.append(jid2)
-        result = json.dumps(result)
-        return HttpResponse(result)
+        return JsonResponse(response, safe=False)
     file_list = Upload.objects.all()
     form = FileUploadForm()
     locals().update({'asset_list': asset_list})
@@ -152,7 +149,6 @@ def script(request):
             elif asset.other_ip:
                 jid2 = saltapi.exeScript(asset.other_ip, f_script)
                 result.append(jid2)
-        result = json.dumps(result)
-        return HttpResponse(result)
+        return JsonResponse(response, safe=False)
     locals().update({'asset_list': asset_list})
     return render(request, 'salts/script.html', locals())

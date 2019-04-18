@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 #coding:utf8
 
+import os
+import mimetypes
 from forms import LoginForm
 from verifycode import VeifyCode
 from django.shortcuts import render
-from django.contrib import auth
-from django.contrib import messages
 from django.urls import reverse
+from django.conf import settings
 from django.db.models import Count
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
+from django.contrib import auth, messages
 from django.contrib.auth.models import User
 from asset.models import PhysicalServer, IDC, Asset
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, FileResponse, HttpResponseRedirect
 
 @login_required(login_url='/login/')
 def index(request):
@@ -78,3 +79,10 @@ def verify_password(request):
             return HttpResponse('false')
         else:
             return HttpResponse('true')
+
+def tpl_download(request, filename, extension):
+    tpl_path = os.path.join(settings.BASE_DIR, 'tpl', filename)
+    content_type = mimetypes.guess_type(tpl_path)[0]
+    response = FileResponse(open(tpl_path, 'rb'), content_type=content_type)
+    response['Content-Disposition'] = 'attachment;filename={0}'.format(filename)
+    return response
