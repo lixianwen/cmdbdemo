@@ -12,8 +12,8 @@ from rest_framework.response import Response
 from django.shortcuts import render, redirect
 from asset.serializers import AssetSerializer
 from models import IDC, PhysicalServer, Asset
+from django.http import Http404, JsonResponse
 from rest_framework.exceptions import ValidationError
-from django.http import Http404, JsonResponse, redirect
 from forms import IdcForm, PhysicalServerForm, AssetForm
 from rest_framework import status, viewsets, permissions
 from django.contrib.auth.decorators import permission_required

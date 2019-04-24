@@ -1,31 +1,20 @@
 {% extends "base.html" %}
-{% block header %}
-{% include "header.html" %}
-{% endblock %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="left">
-    {% include "sidebar.html" %}
-  </div>
-
-  <div class="right">
-    <form method="post" action="" class="form-horizontal" role="form">
-      <div class="form-group">
-        <label class="col-sm-2"></label>
-        <div class="col-md-6 col-sm-10">
-          <h3>修改主机的基本信息</h3>
-        </div>
+  <form method="post" action="" class="form-horizontal" role="form">
+    <div class="form-group">
+      <label class="col-sm-2"></label>
+      <div class="col-md-6 col-sm-10">
+        <h3>修改主机的基本信息</h3>
       </div>
-      {% csrf_token %}
-      {% include "forms.html" %}
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary">提交</button>
-          <a class="btn btn-default" href="{% url 'list' %}">取消</a>
-        </div>
+    </div>
+    {% csrf_token %}
+    {% include "forms.html" %}
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary">提交</button>
+        <a class="btn btn-default" href="{% url 'list' %}">取消</a>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
+  </form>
 {% endblock %}

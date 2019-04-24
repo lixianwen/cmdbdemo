@@ -73,3 +73,14 @@ def export(filename, model):
         col = 0
     
     workbook.close()
+
+class AddClass(object):
+    def __init__(self, fields):
+        for name, field in fields.iteritems():
+            if hasattr(field.widget, 'input_type'):
+                if field.widget.input_type == 'select':
+                    field.widget.attrs['class'] = 'form-control chosen-select'
+                else:
+                    field.widget.attrs['class'] = 'form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'

@@ -4,6 +4,7 @@
 from django import forms
 from asset.models import Asset
 from zabbixapi import ZabbixAPI
+from cmdb.utils import AddClass
 
 zabbixApi = ZabbixAPI()
 
@@ -36,6 +37,10 @@ class AddForm(forms.Form):
                                 choices=getTemplateid(),
                                 widget=forms.SelectMultiple(attrs={'size': 6}),
                                 label=u'模版') 
+
+    def __init__(self, *args, **kwargs):
+        super(AddForm, self).__init__(*args, **kwargs)
+        instance = AddClass(self.fields)
 
     def clean_ip(self):
         asset_instance = self.cleaned_data['ip']

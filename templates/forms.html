@@ -1,13 +1,8 @@
-{% load widget_tweaks %}
 {% for field in form %}
   <div class="form-group">
     <label for="{{ field.id_for_label }}" class="col-sm-2">{{ field.label }}</label>
     <div class="col-md-6 col-sm-10">
-      {% if field|widget_type == "select" or field|widget_type == "selectmultiple" %}
-        {{ field|add_class:"form-control chosen-select"}}
-      {% else %}
-        {{ field|add_class:"form-control" }}
-      {% endif %}
+      {{ field }}
       {% if field.errors %}
         <div class="{% if field.errors %} help-block {% endif %}">
           {% for error in field.errors %}

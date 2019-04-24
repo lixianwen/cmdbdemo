@@ -20,7 +20,17 @@
 </head>
 <body>
 {% block msg %}{% endblock %}
-{% block header %}{% endblock %}
-{% block content %}{% endblock %}
+{% block header %}
+  {% include "header.html" %}
+{% endblock %}
+  <div class="container">
+    <div class="left">
+      {% include "sidebar.html" %}
+    </div>
+  
+    <div class="right">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
 </body>
 </html>

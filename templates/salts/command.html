@@ -66,39 +66,28 @@
     })
 </script>
 {% endblock %}
-{% block header %}
-{% include "header.html" %}
-{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="left">
-    {% include "sidebar.html" %}
+  <div id="form-salt-command">
+    <form class="form-horizontal" role="form">
+      <div class="form-group">
+        <label class="col-sm-2"></label>
+        <div class="col-md-6 col-sm-10">
+          <h3>saltstack 客户端</h3>
+        </div>
+      </div>
+      {% csrf_token %}
+      {% include "forms.html" %}
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="button" class="btn btn-primary" id="command-button">Submit</button>
+        </div>
+      </div>
+    </form>
   </div>
 
-  <div class="right">
-    <div id="form-salt-command">
-      <form class="form-horizontal" role="form">
-        <div class="form-group">
-          <label class="col-sm-2"></label>
-          <div class="col-md-6 col-sm-10">
-            <h3>saltstack 客户端</h3>
-          </div>
-        </div>
-        {% csrf_token %}
-        {% include "forms.html" %}
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-10">
-            <button type="button" class="btn btn-primary" id="command-button">Submit</button>
-          </div>
-        </div>
-      </form>
-    </div>
-
-    <div id="result">
-      <textarea id="test-result" wrap="hard"></textarea>
-    </div>
-
-    <div id="loading">命令执行中...</div>
+  <div id="result">
+    <textarea id="test-result" wrap="hard"></textarea>
   </div>
-</div>
+
+  <div id="loading">命令执行中...</div>
 {% endblock %}

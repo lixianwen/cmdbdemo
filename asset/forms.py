@@ -2,7 +2,7 @@
 #coding:utf8
 
 from django import forms
-from cmdb.utils import validIPV4
+from cmdb.utils import validIPV4, AddClass
 from models import IDC, PhysicalServer, Asset
 from django.forms import ModelForm, Textarea, Select
 from django.utils.translation import ugettext_lazy as _
@@ -12,6 +12,10 @@ class IdcForm(ModelForm):
         model = IDC
         fields = ['name', 'address', 'linkman', 'ci', 'bandwidth', 'ip_segment', 'comment']
         widgets = {'ip_segment': Textarea}
+
+    def __init__(self, *args, **kwargs):
+        super(IdcForm, self).__init__(*args, **kwargs)
+        instance = AddClass(self.fields)
 
 class PhysicalServerForm(ModelForm):
     class Meta:
@@ -23,6 +27,10 @@ class PhysicalServerForm(ModelForm):
             },
         }
 
+    def __init__(self, *args, **kwargs):
+        super(PhysicalServerForm, self).__init__(*args, **kwargs)
+        instance = AddClass(self.fields)
+
 class AssetForm(ModelForm):
     class Meta:
         model = Asset
@@ -32,6 +40,10 @@ class AssetForm(ModelForm):
             'asset_type': Select(attrs={'required': True}),
             'env': Select(attrs={'required': True})
         }
+
+    def __init__(self, *args, **kwargs):
+        super(AssetForm, self).__init__(*args, **kwargs)
+        instance = AddClass(self.fields)
 
     def customValidIP(self, ip):
         if ip:

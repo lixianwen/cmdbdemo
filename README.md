@@ -1,6 +1,6 @@
 # 一个简单的CMDB Demo
 ###### 前端使用[zui框架](http://zui.sexy/)、javascript、jquery和jquery ui
-###### 后端使用python、Django框架 和 Django Rest 框架 还有一些优秀的第三方包，例如 [`django-oauth-toolkit`](https://django-oauth-toolkit.readthedocs.io/en/latest/index.html) 和 [`django-widget-tweaks`](https://pypi.org/project/django-widget-tweaks/)
+###### 后端使用python、Django框架 和 Django Rest 框架 还有一些优秀的第三方包，例如 [`django-oauth-toolkit`](https://django-oauth-toolkit.readthedocs.io/en/latest/index.html)
 
 ### 开发环境：
 python 2.7.5  

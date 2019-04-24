@@ -176,94 +176,83 @@
     })
 </script>
 {% endblock %}
-{% block header %}
-{% include "header.html" %}
-{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="left">
-    {% include "sidebar.html" %}
+  <div class="row">
+    <label class="col-sm-2"></label>
+    <button id="upload" type="button" class="btn btn-info col-sm-1"><i class="icon icon-cloud-upload"></i> 文件上传</button>
+    <div class="col-md-6 col-sm-9"></div>
   </div>
-
-  <div class="right">
-    <div class="row">
-      <label class="col-sm-2"></label>
-      <button id="upload" type="button" class="btn btn-info col-sm-1"><i class="icon icon-cloud-upload"></i> 文件上传</button>
-      <div class="col-md-6 col-sm-9"></div>
-    </div>
-    <div id="uploadFile">
-      <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}" role="form" id="uploadFileForm">
-        {% csrf_token %}
-        <div class="form-group">
-          {{ form }}
-        </div>
-      </form>
-      <div class="progress">
-        <div class="bar"></div>
-        <div class="percent">0%</div>
+  <div id="uploadFile">
+    <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}" role="form" id="uploadFileForm">
+      {% csrf_token %}
+      <div class="form-group">
+        {{ form }}
       </div>
-      <div id="status"></div>
+    </form>
+    <div class="progress">
+      <div class="bar"></div>
+      <div class="percent">0%</div>
     </div>
-
-    <div id="form-salt-push">
-      <form class="form-horizontal pushform" role="form" id="push_form">
-        <div class="form-group">
-          <label class="col-sm-2"></label>
-          <div class="col-md-6 col-sm-10">
-            <h3>文件分发</h3>
-          </div>
-        </div>
-        {% csrf_token %}
-        <div class="form-group">
-          <label for="select_host" class="col-sm-2">Minion</label>
-          <div class="col-md-6 col-sm-10">
-            <select id="select_host" name="host" multiple class="form-control chosen-select" data-placeholder="选择一台或多台主机">
-              {% for asset in asset_list %}
-                <option value="{{ asset.id }}">{{ asset }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="select_file" class="col-sm-2">选择文件</label>
-          <div class="col-md-6 col-sm-10">
-            <select id="select_file" name="push_file" class="form-control chosen-select">
-              <option value="" selected>-------</option>
-              {% for file in file_list %}
-                <option value="{{ file.filename }}">{{ file.filename }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="_dest" class="col-sm-2">目标目录</label>
-          <div class="col-md-6 col-sm-10">
-            <input id="_dest" type="text" required name="dest" placeholder="请填写绝对路径" class="form-control">
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-10">
-            <button id="push" type="button" class="btn btn-primary">推送</button>
-          </div>
-        </div>
-      </form>
-    </div>
-
-    <div id="result">
-      <textarea id="test-result" wrap="hard"></textarea>
-    </div>
-
-    <div id="hiddenBox">
-      <form role="form" id="hidden">
-        {% csrf_token %}
-        <div class="form-group">
-          <!-- <label for="_jid">任务编号</label> -->
-          <input id="_jid" type="text" required name="jid" class="form-control">
-        </div>
-      </form>
-    </div>
-
-    <div id="loading">文件推送中...</div>
+    <div id="status"></div>
   </div>
-</div>
+
+  <div id="form-salt-push">
+    <form class="form-horizontal pushform" role="form" id="push_form">
+      <div class="form-group">
+        <label class="col-sm-2"></label>
+        <div class="col-md-6 col-sm-10">
+          <h3>文件分发</h3>
+        </div>
+      </div>
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="select_host" class="col-sm-2">Minion</label>
+        <div class="col-md-6 col-sm-10">
+          <select id="select_host" name="host" multiple class="form-control chosen-select" data-placeholder="选择一台或多台主机">
+            {% for asset in asset_list %}
+              <option value="{{ asset.id }}">{{ asset }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="select_file" class="col-sm-2">选择文件</label>
+        <div class="col-md-6 col-sm-10">
+          <select id="select_file" name="push_file" class="form-control chosen-select">
+            <option value="" selected>-------</option>
+            {% for file in file_list %}
+              <option value="{{ file.filename }}">{{ file.filename }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="_dest" class="col-sm-2">目标目录</label>
+        <div class="col-md-6 col-sm-10">
+          <input id="_dest" type="text" required name="dest" placeholder="请填写绝对路径" class="form-control">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button id="push" type="button" class="btn btn-primary">推送</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div id="result">
+    <textarea id="test-result" wrap="hard"></textarea>
+  </div>
+
+  <div id="hiddenBox">
+    <form role="form" id="hidden">
+      {% csrf_token %}
+      <div class="form-group">
+        <!-- <label for="_jid">任务编号</label> -->
+        <input id="_jid" type="text" required name="jid" class="form-control">
+      </div>
+    </form>
+  </div>
+
+  <div id="loading">文件推送中...</div>
 {% endblock %}

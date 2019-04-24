@@ -100,142 +100,130 @@ $(function () {
 }
 </style>
 {% endblock %}
-{% block header %}
-{% include "header.html" %}
-{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="left">
-    {% include "sidebar.html" %}
+  <div class="panel panel-warning">
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <a href="#tips" data-toggle="collapse" data-parent="#tip">查看提示</a>
+      </h3>
+    </div>
+    <div id="tips" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p class="tip"><span>有选择下拉菜单的情况下暂时不提供分页功能</span></p>
+        <p class="tip"><span>搜索结果暂时不考虑加入分页功能</span></p>
+      </div>
+    </div>
   </div>
 
-  <div class="right">
-    <div class="panel panel-warning">
-      <div class="panel-heading">
-        <h3 class="panel-title">
-          <a href="#tips" data-toggle="collapse" data-parent="#tip">查看提示</a>
-        </h3>
+  <div class="search">
+    <form action="" method="post" id="search-form">
+      {% csrf_token %}
+      <div class="input-group">
+        <input type="search" class="form-control" name="keyword" placeholder="主机名">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit"><i class="icon icon-search"></i></button>
+        </span>
       </div>
-      <div id="tips" class="panel-collapse collapse">
-        <div class="panel-body">
-          <p class="tip"><span>有选择下拉菜单的情况下暂时不提供分页功能</span></p>
-          <p class="tip"><span>搜索结果暂时不考虑加入分页功能</span></p>
-        </div>
-      </div>
-    </div>
+    </form>
+  </div>
 
-    <div class="search">
-      <form action="" method="post" id="search-form">
-        {% csrf_token %}
-        <div class="input-group">
-          <input type="search" class="form-control" name="keyword" placeholder="主机名">
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="submit"><i class="icon icon-search"></i></button>
-          </span>
-        </div>
-      </form>
-    </div>
+  <div class="select-header">
+    <select id="aname">
+      <option value="">机房</option>
+      {% for idc in idc_list %}
+        <option value="{{ idc.id }}">{{ idc.name }}</option>
+      {% endfor %}
+    </select>
+    <select id="atype">
+      <option value="">资产类型</option>
+      <option value="1">虚拟机</option>
+      <option value="2">路由器</option>
+      <option value="3">交换机</option>
+      <option value="4">其他</option>
+    </select>
+    <select id="host">
+      <option value="">宿主机</option>
+      {% for ps in ps_list %}
+        <option value="{{ ps.id }}">{{ ps.ip }}</option>
+      {% endfor %}
+    </select>
+    <select id="env">
+      <option value="">系统环境</option>
+      <option value="1">生产环境</option>
+      <option value="2">测试环境</option>
+    </select>
+    <select id="status">
+      <option value="">资产状态</option>
+      <option value="1">已使用</option>
+      <option value="2">未使用</option>
+      <option value="3">待回收</option>
+    </select>
+    <button class="btn btn-link" type="button">清空选择</button>
+  </div>
 
-    <div class="select-header">
-      <select id="aname">
-        <option value="">机房</option>
-        {% for idc in idc_list %}
-          <option value="{{ idc.id }}">{{ idc.name }}</option>
-        {% endfor %}
-      </select>
-      <select id="atype">
-        <option value="">资产类型</option>
-        <option value="1">虚拟机</option>
-        <option value="2">路由器</option>
-        <option value="3">交换机</option>
-        <option value="4">其他</option>
-      </select>
-      <select id="host">
-        <option value="">宿主机</option>
-        {% for ps in ps_list %}
-          <option value="{{ ps.id }}">{{ ps.ip }}</option>
-        {% endfor %}
-      </select>
-      <select id="env">
-        <option value="">系统环境</option>
-        <option value="1">生产环境</option>
-        <option value="2">测试环境</option>
-      </select>
-      <select id="status">
-        <option value="">资产状态</option>
-        <option value="1">已使用</option>
-        <option value="2">未使用</option>
-        <option value="3">待回收</option>
-      </select>
-      <button class="btn btn-link" type="button">清空选择</button>
-    </div>
-
-
-    <div class="table-responsive">
-      <table class="table table-hover table-bordered table-auto">
-        <caption>主机详细信息列表</caption>
-        <thead>
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered table-auto">
+      <caption>主机详细信息列表</caption>
+      <thead>
+        <tr>
+          <th>电信IP</th>
+          <th>联通IP</th>
+          <th>机房</th>
+          <th>主机名</th>
+          <th>CPU</th>
+          <th>内存(GB)</th>
+          <th>硬盘(GB)</th>
+          <th>操作系统</th>
+          <th>机器状态</th>
+          <th>主机类型</th>
+          <th>运行环境</th>
+          <th>宿主机</th>
+          <th>备注</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for asset in asset_list %}
           <tr>
-            <th>电信IP</th>
-            <th>联通IP</th>
-            <th>机房</th>
-            <th>主机名</th>
-            <th>CPU</th>
-            <th>内存(GB)</th>
-            <th>硬盘(GB)</th>
-            <th>操作系统</th>
-            <th>机器状态</th>
-            <th>主机类型</th>
-            <th>运行环境</th>
-            <th>宿主机</th>
-            <th>备注</th>
-            <th>操作</th>
+            <td>{{ asset.ip }}</td>
+            <td>{{ asset.other_ip }}</td>
+            <td>{{ asset.idc }}</td>
+            <td>{{ asset.hostname }}</td>
+            <td>{{ asset.cpu }}</td>
+            <td>{{ asset.memory }}</td>
+            <td>{{ asset.disk }}</td>
+            <td>{{ asset.system }}</td>
+            <td>{{ asset.get_status_display }}</td>
+            <td>{{ asset.get_asset_type_display }}</td>
+            <td>{{ asset.get_env_display }}</td>
+            <td>{{ asset.host }}</td>
+            <td>{{ asset.comment }}</td>
+            <td class="action"><a href="{% url 'edit' asset.id %}" class="btn btn-info btn-sm">编辑</a> <a class="delete btn btn-danger btn-sm" href="{% url 'del' asset.id %}">删除</a></td>
           </tr>
-        </thead>
-        <tbody>
-          {% for asset in asset_list %}
-            <tr>
-              <td>{{ asset.ip }}</td>
-              <td>{{ asset.other_ip }}</td>
-              <td>{{ asset.idc }}</td>
-              <td>{{ asset.hostname }}</td>
-              <td>{{ asset.cpu }}</td>
-              <td>{{ asset.memory }}</td>
-              <td>{{ asset.disk }}</td>
-              <td>{{ asset.system }}</td>
-              <td>{{ asset.get_status_display }}</td>
-              <td>{{ asset.get_asset_type_display }}</td>
-              <td>{{ asset.get_env_display }}</td>
-              <td>{{ asset.host }}</td>
-              <td>{{ asset.comment }}</td>
-              <td class="action"><a href="{% url 'edit' asset.id %}" class="btn btn-info btn-sm">编辑</a> <a class="delete btn btn-danger btn-sm" href="{% url 'del' asset.id %}">删除</a></td>
-            </tr>
-          {% endfor %}  
-        </tbody>  
-      </table>
-    </div>
-
-    <div class="pull-right">
-      {% ifequal flag 1 %}
-        <ul class="pager">
-          {% if asset_list.has_previous %}
-            <li><a href="?page={{ asset_list.previous_page_number }}" class="previous">上一页</a><li>
-          {% endif %}
-          {% for page in page_list %}
-            {% ifequal page asset_list.number %}
-              <li class="active"><a href="?page={{ page }}">{{ page }}</a></li>
-            {% else %}
-              <li><a href="?page={{ page }}">{{ page }}</a><li>
-            {% endifequal %}
-          {% endfor %}
-          {% if asset_list.has_next %}
-            <li><a href="?page={{ asset_list.next_page_number }}" class="next">下一页</a><li>
-          {% endif %}
-        </ul>
-      {% endifequal %}
-    </div>
+        {% endfor %}  
+      </tbody>  
+    </table>
   </div>
-</div>
+
+  <div class="pull-right">
+    {% ifequal flag 1 %}
+      <ul class="pager">
+        {% if asset_list.has_previous %}
+          <li><a href="?page={{ asset_list.previous_page_number }}" class="previous">上一页</a><li>
+        {% endif %}
+        {% for page in page_list %}
+          {% ifequal page asset_list.number %}
+            <li class="active"><a href="?page={{ page }}">{{ page }}</a></li>
+          {% else %}
+            <li><a href="?page={{ page }}">{{ page }}</a><li>
+          {% endifequal %}
+        {% endfor %}
+        {% if asset_list.has_next %}
+          <li><a href="?page={{ asset_list.next_page_number }}" class="next">下一页</a><li>
+        {% endif %}
+      </ul>
+    {% endifequal %}
+  </div>
 
 <script>
     setTimeout(function () {
