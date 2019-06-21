@@ -1,0 +1,139 @@
+{% extends "rbac/base_permission.html" %}
+{% load customtags %}
+{% block head %}
+<script>
+    $(function () {
+      $(".pull-right input[type=checkbox]").change(function () {
+          $(this).parents("#first").next().find(":checkbox").prop("checked", $(this).prop("checked"));
+      });
+      $(".btn").on("click", function() {
+          new $.zui.Messager("保存成功", {
+              type: "success",
+              icon: "bell"
+          }).show();
+      })
+    })
+</script>
+<style>
+  td {text-align: left;}
+  .table caption {padding-left: 8px;}
+  .children {margin-left: 10px;}
+  .parent .checkbox-inline, .children .checkbox-inline {margin-bottom: 5px;}
+</style>
+{% endblock %}
+{% block content %}
+  <div class="alert alert-info">提示：分配或取消分配权限后请重新登录</div>
+  <div class="row">
+    <div class="col-md-3 col-sm-6">
+      <div class="panel">
+        <div class="panel-heading">
+          <span><i class="icon icon-user"></i> 用户列表</span>
+        </div>
+        <ul class="list-group">
+          {% for current_user in user_list %}
+            {% ifequal current_user.id|stringformat:"s" user_id %}
+              <a href="?uid={{ current_user.id }}" class="list-group-item active">{{ current_user.name }}</a>
+            {% else %}
+              <a href="?uid={{ current_user.id }}" class="list-group-item">{{ current_user.name }}</a>
+            {% endifequal %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <form method="post" action="">
+        {% csrf_token %}
+        <input type="hidden" name="type" value="role">
+        <div class="panel">
+          <div class="panel-heading">
+            <span><i class="icon icon-eye-open"></i> 角色列表</span>
+            {% if user_id %}
+              <button type="submit" class="btn btn-success btn-sm pull-right"><i class="icon icon-save"></i> 保存</button>
+            {% endif %}
+          </div>
+          <table class="table">
+            <caption>提示：点击用户后才能为其分配角色</caption>
+            <thead>
+              <tr>
+                <th>角色名</th>
+                <th>选择</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for role in role_list %}
+                {% ifequal role.id|stringformat:"s" role_id %}
+                  <tr class="active">
+                {% else %}
+                  <tr>
+                {% endifequal %}
+                    {% if user_id %}
+                      <td><a href="?uid={{ user_id }}&rid={{ role.id }}">{{ role.name }}</a></td>
+                    {% else %}
+                      <td><a href="?rid={{ role.id }}">{{ role.name }}</a></td>
+                    {% endif %}
+                    <td><input type="checkbox" name="role" value="{{ role.id}}" {% if role.id in user_role_list %}checked{% endif %}></td>
+                  </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </form>
+    </div>
+
+      <div class="col-md-6 col-sm-6">
+        <form method="post" action="">
+          {% csrf_token %}
+          <input type="hidden" name="type" value="permission">
+          <div class="panel">
+            <div class="panel-heading">
+              <span><i class="icon icon-eye-close"></i> 权限分配</span>
+              {% if role_id %}
+                <button type="submit" class="btn btn-success btn-sm pull-right"><i class="icon icon-save"></i> 保存</button>
+              {% endif %}
+            </div>
+            <table class="table">
+              <caption>提示：点击用户后才能为其分配角色</caption>
+              <tbody>
+                {% for item in all_menu_list %}
+                  <tr id="first">
+                     <td>
+                       <i class="icon icon-caret-down"></i> {{ item.title }}
+                       <div class="pull-right">
+                         <label class="checkbox-inline" for="select_all_{{ item.id }}">
+                           <input type="checkbox" id="select_all_{{ item.id }}"> 全选
+                         </label>
+                       </div>
+                     </td>
+                  </tr>
+                  {% if item.children %}
+                    <tr>
+                      <td>
+                        {% for node in item.children %}
+                          <div class="parent">
+                            <label class="checkbox-inline" for="permission_{{ node.id }}">
+                              <input type="checkbox" id="permission_{{ node.id }}" name="permission" value="{{ node.id}}" {% if node.id in user_permission_list %}checked{% endif %}> {{ node.description }}（菜单）
+                            </label>
+                          </div>
+                          {% if node.children %}
+                            <div class="children">
+                              {% for child in node.children %}
+                                <label class="checkbox-inline" for="permission_{{ child.id }}">
+                                  <input type="checkbox" id="permission_{{ child.id }}" name="permission" value="{{ child.id}}" {% if child.id in user_permission_list %}checked{% endif %}> {{ child.description }}
+                                </label>
+                              {% endfor %}
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+                      </td>
+                    </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </form>
+      </div>
+  </div>
+
+{% endblock %}

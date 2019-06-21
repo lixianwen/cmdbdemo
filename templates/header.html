@@ -1,3 +1,4 @@
+{% load hightlight from customfilters %}
 <div class="header">
   <div id="global-nav" class="global_nav">
     <nav class="navbar navbar-default" role="navigation">
@@ -18,8 +19,8 @@
         <div class="collapse navbar-collapse navbar-collapse-example">
           <!-- 一般导航项目 -->
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">项目</a></li>
-            <li><a href="#">需求</a></li>
+            <li{% if request|hightlight %} class="active"{% endif %}><a href="{% url 'index' %}">项目</a></li>
+            <li{% if request|hightlight %} class="active"{% endif %}><a href="{% url 'rbac:list_menu' %}">权限管理</a></li>
           </ul>
           <!-- 右侧的导航项目 -->
           <ul class="nav navbar-nav navbar-right">

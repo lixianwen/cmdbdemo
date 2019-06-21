@@ -1,0 +1,171 @@
+{% extends "rbac/base_permission.html" %}
+{% load customtags %}
+{% block head %}
+<script>
+    $(function () {
+        $("a.delete").click(function (e) {
+            var action = confirm("确认删除？");
+            if (action == false) {
+                e.preventDefault()
+            }
+        })
+    })
+</script>
+<style>
+  td {text-align: left;}
+  .modal-footer {
+    margin-top: 10px;
+  }
+</style>
+{% endblock %}
+{% block content %}
+  <div class="row">
+    <div class="col-md-3 col-sm-6">
+      <div class="panel">
+        <div class="panel-heading">
+          <span><i class="icon icon-tag"></i> 一级菜单</span>
+          <a data-toggle="modal" href="#add-menu" class="btn btn-info btn-sm pull-right"><i class="icon icon-plus"></i> 新增</a>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>ICON</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for menu in menu_list %}
+              {% ifequal menu.id|stringformat:"s" menu_id %}
+                <tr class="active">
+              {% else %}
+                <tr>
+              {% endifequal %}
+                  <td><a href="?mid={{ menu.id }}">{{ menu.title }}</a></td>
+                  <td><i class="icon {{ menu.icon }}"></i></td>
+                  <td>
+                    <a href="{% url_handler 'rbac:edit_menu' menu.id %}"><i class="icon icon-edit"></i></a>
+                    <a href="{% url_handler 'rbac:delete_menu' menu.id %}" class="delete"><i class="icon icon-remove-circle"></i></a>
+                  </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {% if menu_id %}
+      <div class="col-md-3 col-sm-6">
+        <div class="panel">
+          <div class="panel-heading">
+            <span><i class="icon icon-eye-open"></i> 二级菜单</span>
+            <a href="{% url_handler 'rbac:add_second_menu' menu_id %}" class="btn btn-info btn-sm pull-right"><i class="icon icon-plus"></i> 新增</a>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>名称</th>
+                <th>含正则的URL</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for menu in second_grade_menu_list %}
+                {% ifequal menu.id|stringformat:"s" second_grade_menu_id %}
+                  <tr class="active">
+                {% else %}
+                  <tr>
+                {% endifequal %}
+                    <td><a href="?mid={{ menu_id }}&sid={{ menu.id }}">{{ menu.description }}</a></td>
+                    <td>{{ menu.url }}</td>
+                    <td>
+                      <a href="{% url_handler 'rbac:edit_second_menu' menu.id %}"><i class="icon icon-edit"></i></a>
+                      <a href="{% url_handler 'rbac:delete_second_menu' menu.id %}" class="delete"><i class="icon icon-remove-circle"></i></a>
+                    </td>
+                  </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if second_grade_menu_id %}
+      <div class="col-md-6 col-sm-6">
+        <div class="panel">
+          <div class="panel-heading">
+            <span><i class="icon icon-eye-close"></i> 非菜单权限</span>
+            <div class="btn-group pull-right">
+              <a data-toggle="modal" href="#add-permission" class="btn btn-info btn-sm"><i class="icon icon-plus"></i> 新增</a>
+              <a href="{% url_handler 'rbac:multi-permission' %}" class="btn btn-primary btn-sm"><i class="icon icon-double-angle-right"></i> 批量操作</a>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>名称</th>
+                <th>含正则的URL</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for perm in not_menu_permission_list %}
+                <tr>
+                  <td>{{ perm.description }}</td>
+                  <td>{{ perm.url }}</td>
+                  <td>
+                    <a href="{% url_handler 'rbac:edit_permission' perm.id %}"><i class="icon icon-edit"></i></a>
+                    <a href="{% url_handler 'rbac:delete_permission' perm.id %}" class="delete"><i class="icon icon-remove-circle"></i></a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="modal fade" id="add-menu">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="{% url_handler 'rbac:add_menu' %}" method="post">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+            <h4 class="modal-title">添加一级菜单</h4>
+          </div>
+          <div class="modal-body">
+            {% csrf_token %}
+            {% include "forms.html" with form=add_menu_form %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="submit" class="btn btn-primary">提交</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="add-permission">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="{% url_handler 'rbac:add_permission' second_grade_menu_id|default:0 %}" method="post">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+            <h4 class="modal-title">添加非菜单权限</h4>
+          </div>
+          <div class="modal-body">
+            {% csrf_token %}
+            {% include "forms.html" with form=permission_form %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="submit" class="btn btn-primary">提交</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

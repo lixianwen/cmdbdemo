@@ -40,9 +40,6 @@ class PhysicalServer(models.Model):
     class Meta:
         verbose_name = u"物理服务器"
         verbose_name_plural = verbose_name
-        permissions = (
-            ("view_ps", "Can see available physical server"),
-        )
 
 class IDC(models.Model):
     name = models.CharField(max_length=32, verbose_name=u'机房名称')
@@ -60,9 +57,6 @@ class IDC(models.Model):
         verbose_name = u"IDC机房"
         verbose_name_plural = verbose_name
         ordering = ['-id']
-        permissions = (
-            ("view_idc", "Can see available idc info"),
-        )
 
 class Asset(models.Model):
     ip = models.CharField(max_length=16, blank=True, verbose_name=u'电信IP')
@@ -86,10 +80,3 @@ class Asset(models.Model):
             return self.other_ip
         else:
             return self.hostname
-
-    class Meta:
-        permissions = (
-            ("view_asset", "Can see available asset"),
-            ("search_asset", "Can search asset"),
-            ("view_hostname", "Can retrieve asset hostname"),
-        )

@@ -1,0 +1,11 @@
+{% if breadcrumb_list|length != 1 %}
+  <ol class="breadcrumb">
+    {% for i in breadcrumb_list %}
+      {% if i.class %}
+        <li class="{{ i.class }}">{{ i.title }}</li>
+      {% else %}
+        <li><a href="{{ i.url }}">{{ i.title }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ol>
+{% endif %}

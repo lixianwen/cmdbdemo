@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load customfilters %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css">
@@ -166,6 +166,7 @@ $(function () {
       <caption>主机详细信息列表</caption>
       <thead>
         <tr>
+          <th>ID</th>
           <th>电信IP</th>
           <th>联通IP</th>
           <th>机房</th>
@@ -179,12 +180,15 @@ $(function () {
           <th>运行环境</th>
           <th>宿主机</th>
           <th>备注</th>
-          <th>操作</th>
+          {% if request|has_permission:'修改服务器' or request|has_permission:'删除服务器' %}
+            <th>操作</th>
+          {% endif %}
         </tr>
       </thead>
       <tbody>
         {% for asset in asset_list %}
           <tr>
+            <td>{{ forloop.counter }}</td>
             <td>{{ asset.ip }}</td>
             <td>{{ asset.other_ip }}</td>
             <td>{{ asset.idc }}</td>
@@ -198,7 +202,18 @@ $(function () {
             <td>{{ asset.get_env_display }}</td>
             <td>{{ asset.host }}</td>
             <td>{{ asset.comment }}</td>
-            <td class="action"><a href="{% url 'edit' asset.id %}" class="btn btn-info btn-sm">编辑</a> <a class="delete btn btn-danger btn-sm" href="{% url 'del' asset.id %}">删除</a></td>
+            {% with perm_edit=request|has_permission:'修改服务器' perm_delete=request|has_permission:'删除服务器' %}
+              {% if perm_edit or perm_delete %}
+                <td class="action">
+                  {% if perm_edit %}
+                    <a href="{% url 'edit' asset.id %}" class="btn btn-info btn-sm">编辑</a>
+                  {% endif %}
+                  {% if perm_delete %}
+                    <a href="{% url 'del' asset.id %}" class="delete btn btn-danger btn-sm">删除</a>
+                  {% endif %}
+                </td>
+              {% endif %}
+            {% endwith %}
           </tr>
         {% endfor %}  
       </tbody>  

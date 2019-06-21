@@ -1,0 +1,18 @@
+{% extends "rbac/base_permission.html" %}
+{% block content %}
+  <form method="post" action="" class="form-horizontal" role="form">
+    <div class="form-group">
+      <label class="col-sm-2"></label>
+      <div class="col-md-6 col-sm-10">
+        <h3>编辑一级菜单|权限|角色</h3>
+      </div>
+    </div>
+    {% csrf_token %}
+    {% include "forms.html" %}
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary">提交</button>
+      </div>
+    </div>
+  </form>
+{% endblock %}

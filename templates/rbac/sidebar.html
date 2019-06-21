@@ -1,0 +1,29 @@
+<div class="sidebar">
+  <nav class="menu" data-ride="menu">
+    <ul id="treeMenu" class="tree tree-menu" data-ride="tree">
+      {% for item in menu_list %}
+        {% if item.title == '首页' %}
+            <li><a href="{% url 'index' %}"><i class="icon icon-home"></i>仪盘表</a></li>
+        {% else %} 
+            {% if item.class %}
+              <li class="{{ item.class }}">
+            {% else %}
+              <li>
+            {% endif %}
+                <a href="javascript:void(0);"><i class="icon {{ item.icon }}"></i>{{ item.title }}</a>
+                <ul>
+                  {% for node in item.nodes %}
+                    <li><a href="{{ node.url }}"><i class="icon {{ node.icon }}"></i>{{ node.title }}</a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
+  <footer>
+    <div class="footer">
+      <p class="text-muted small">版本 <span class="doc-version">0.2.0</span></p>
+    </div>
+  </footer>
+</div>

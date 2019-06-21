@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^asset/', include('asset.urls')),
     url(r'^salt/', include('salts.urls')),
     url(r'^zabbix/', include('zabbix.urls')),
+    url(r'^permission/', include('rbac.urls', namespace='rbac')),
     url(r'^$', index, name='index'),
     url(r'^login/$', loginview, name='loginview'),
     url(r'^logout/$', logoutview, name='logoutview'),

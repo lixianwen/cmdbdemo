@@ -22,7 +22,6 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 saltapi = SaltAPI()
 asset_list = Asset.objects.all()
 
-@permission_required('auth.change_user')
 def collect(request):
     response = dict()
     if request.method == 'POST':
@@ -48,7 +47,6 @@ def collect(request):
         return JsonResponse(response)
     return render(request, 'salts/collect.html')
 
-@permission_required('auth.change_user')
 def command(request):
     if request.method == 'POST':
         form = CommandForm(request.POST)
@@ -66,7 +64,6 @@ def command(request):
     form = CommandForm()
     return render(request, 'salts/command.html', locals())
 
-@permission_required('auth.change_user')
 def install(request):
     if request.method == 'POST':
         form = InstallForm(request.POST)
@@ -83,7 +80,6 @@ def install(request):
         form = InstallForm()
     return render(request, 'salts/install.html', locals())
 
-@permission_required('auth.change_user')
 def upload(request):
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
@@ -102,7 +98,6 @@ def check_file():
         if f.filename.name.split('/')[-1] not in os.listdir(settings.MEDIA_ROOT + '/upload'):
             Upload.objects.get(pk=f.pk).delete()
 
-@permission_required('auth.change_user')
 def push(request):
     check_file()
     if request.method == 'POST':
@@ -124,7 +119,6 @@ def push(request):
     locals().update({'asset_list': asset_list})
     return render(request, 'salts/push.html', locals())
 
-@permission_required('auth.change_user')
 def job(request):
     if request.method == 'POST':
         jid = request.POST.get('jid')
@@ -132,7 +126,6 @@ def job(request):
         return HttpResponse(response)
     return render(request, 'salts/result.html')
 
-@permission_required('auth.change_user')
 def script(request):
     check_file()
     file_list = Upload.objects.all()

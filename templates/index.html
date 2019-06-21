@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static customfilters %}
 {% block head %}
    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/zui/1.8.1/lib/dashboard/zui.dashboard.min.css"/>
    <script src="https://cdn.bootcss.com/zui/1.8.1/lib/dashboard/zui.dashboard.min.js"></script>
@@ -12,64 +12,53 @@
     })
 </script>
 {% endblock %}
-{% block header %}
-{% include "header.html" %}
-{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="left">
-    {% include "sidebar.html" %}
+  <div id="dashboard" class="dashboard dashboard-draggable">
+    <section class="row">
+      <div class="col-md-3 col-sm-6">
+        <div class="panel" data-id="1">
+          <div class="panel-heading">
+            <i class="icon icon-server"></i>
+            <span class="title">IDC总数</span>
+          </div>
+          <div class="panel-body">
+            <h2><a href="{% url 'idc' %}" style="color: #333;">{{ idc_number }}</a></h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="panel" data-id="2">
+          <div class="panel-heading">
+            <i class="icon icon-server"></i>
+            <span class="title">物理服务器数量</span>
+          </div>
+          <div class="panel-body">
+            <h2><a href="{% url 'ps' %}" style="color: #333;">{{ ps_number }}</a></h2>    
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="panel" data-id="3">
+          <div class="panel-heading">
+            <i class="icon icon-server"></i>
+            <span class="title">资产总数</span>
+          </div>
+          <div class="panel-body">
+            <h2><a href="{% url 'list' %}" style="color: #333;">{{ host_number }}</a></h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="panel" data-id="4">
+          <div class="panel-heading">
+            <i class="icon icon-user"></i>
+            <span class="title">当前用户</span>
+          </div>
+          <div class="panel-body">
+            <h2>{{ online_user }}</h2>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
-
-  <div class="right">
-    <div id="dashboard" class="dashboard dashboard-draggable">
-      <section class="row">
-        <div class="col-md-3 col-sm-6">
-          <div class="panel" data-id="1">
-            <div class="panel-heading">
-              <i class="icon icon-server"></i>
-              <span class="title">IDC总数</span>
-            </div>
-            <div class="panel-body">
-              <h2><a href="{% url 'idc' %}" style="color: #333;">{{ idc_number }}</a></h2>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <div class="panel" data-id="2">
-            <div class="panel-heading">
-              <i class="icon icon-server"></i>
-              <span class="title">物理服务器数量</span>
-            </div>
-            <div class="panel-body">
-              <h2><a href="{% url 'ps' %}" style="color: #333;">{{ ps_number }}</a></h2>    
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <div class="panel" data-id="3">
-            <div class="panel-heading">
-              <i class="icon icon-server"></i>
-              <span class="title">资产总数</span>
-            </div>
-            <div class="panel-body">
-              <h2><a href="{% url 'list' %}" style="color: #333;">{{ host_number }}</a></h2>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <div class="panel" data-id="4">
-            <div class="panel-heading">
-              <i class="icon icon-user"></i>
-              <span class="title">当前用户</span>
-            </div>
-            <div class="panel-body">
-              <h2>{{ online_user }}</h2>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-</div>
 {% endblock %}

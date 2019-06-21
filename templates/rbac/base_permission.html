@@ -25,11 +25,20 @@
 {% endblock %}
   <div class="container">
     <div class="left">
-      {% sidebar %}
+      <div class="sidebar">
+        <nav class="menu" data-ride="menu" style="width: 200px">
+          <ul id="treeMenu" class="tree tree-menu" data-ride="tree">
+            <li><a href="{% url 'rbac:list_menu' %}"><i class="icon icon-lock"></i>权限管理</a></li>
+            <li><a href="{% url 'rbac:assign-permission' %}"><i class="icon icon-lock"></i>权限分配</a></li>
+            <li><a href="{% url 'oauth2_provider:list' %}"><i class="icon icon-asterisk"></i>应用管理</a></li>
+            <li><a href="{% url 'rbac:list_role' %}"><i class="icon icon-anchor"></i>角色管理</a></li>
+            <li><a href="/admin/"><i class="icon icon-user"></i>用户管理</a></li>
+          </ul>
+        </nav>
+      </div>
     </div>
   
     <div class="right">
-      {% breadcrumb %}
       {% block content %}{% endblock %}
     </div>
   </div>

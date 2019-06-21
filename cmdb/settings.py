@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'asset',
     'salts',
     'zabbix',
+    'rbac',
     'rest_framework',
-    'widget_tweaks',
     'oauth2_provider',
 ]
 
@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cmdb.middleware.RbacMiddleware',
     'cmdb.middleware.IPFilterMiddleware',
     'cmdb.middleware.UserExceptionMiddleware',
 ]
@@ -65,7 +66,7 @@ ROOT_URLCONF = 'cmdb.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BA2CKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -174,3 +175,19 @@ OAUTH2_PROVIDER = {
                'write': 'Write scope',
               }
 }
+
+
+PERMISSION_SESSION_KEY = 'permission_url_list'
+
+VALID_URL_LIST = [
+    '/login/',
+    '/logout/',
+    '/admin/.*',
+    '/image/',
+    '/password/',
+    '/verify/',
+    '/asset/api/',
+    '/assset/docs'
+]
+
+MENU_SESSION_KEY = 'menu_list'

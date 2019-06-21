@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+   <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/zui/1.8.1/lib/dashboard/zui.dashboard.min.css"/>
+   <script src="https://cdn.bootcss.com/zui/1.8.1/lib/dashboard/zui.dashboard.min.js"></script>
+<script>
+</script>
+{% endblock %}
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="left">
+    {% include "sidebar.html" %}
+  </div>
+
+  <div class="right">
+    <h1>hello world</h1>
+  </div>
+</div>
+{% endblock %}

@@ -11,7 +11,6 @@ from forms import AddForm
 
 zabbixAPI = ZabbixAPI()
 
-@permission_required('auth.change_user')
 def add(request):
     if request.method == 'POST':
         form = AddForm(request.POST)
@@ -36,7 +35,6 @@ def add(request):
         form = AddForm()       
     return render(request, 'zabbix/add.html', locals())
 
-@permission_required('auth.change_user')
 def delete(request):
     host_list = zabbixAPI.getHostID()
     if request.method == 'POST':

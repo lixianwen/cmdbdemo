@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load customfilters %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
 <script>
@@ -19,6 +19,7 @@
       <caption>IDC详细信息</caption>
       <thead>
         <tr>
+          <th>ID</th>
           <th>IDC名称</th>
           <th>机房地址</th>
           <th>联系人</th>
@@ -26,12 +27,15 @@
           <th>机房带宽</th>
           <th>IP地址段</th>
           <th>备注</th>
-          <th>操作</th>
+          {% if request|has_permission:'修改机房' or request|has_permission:'删除机房' %}
+            <th>操作</th>
+          {% endif %}
         </tr>
       </thead>
       <tbody>
         {% for idc in idc_list %}
           <tr>
+            <td>{{ forloop.counter }}</td>
             <td>{{ idc.name }}</td>
             <td>{{ idc.address }}</td>
             <td>{{ idc.linkman }}</td>
@@ -39,7 +43,18 @@
             <td>{{ idc.bandwidth }}</td>
             <td>{{ idc.ip_segment }}</td>
             <td>{{ idc.comment }}</td>
-            <td class="action"><a href="{% url 'edit_idc' idc.id %}" class="btn btn-info btn-sm">编辑</a> <a href="{% url 'del_idc' idc.id %}" class="delete btn btn-danger btn-sm">删除</a></td>
+            {% with perm_edit=request|has_permission:'修改机房' perm_delete=request|has_permission:'删除机房' %}
+              {% if perm_edit or perm_delete %}
+                <td class="action">
+                  {% if perm_edit %}
+                    <a href="{% url 'edit_idc' idc.id %}" class="btn btn-info btn-sm">编辑</a>
+                  {% endif %}
+                  {% if perm_delete %}
+                    <a href="{% url 'del_idc' idc.id %}" class="delete btn btn-danger btn-sm">删除</a>
+                  {% endif %}
+                </td>
+              {% endif %}
+            {% endwith %}
           </tr>
         {% endfor %}   
       </tbody> 

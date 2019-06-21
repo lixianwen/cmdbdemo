@@ -7,6 +7,7 @@ import subprocess
 import xlsxwriter
 from django.conf import settings
 from rest_framework.views import exception_handler
+from django.urls import RegexURLPattern, RegexURLResolver
 
 r = re.compile(r'[\.]+')
 
@@ -84,3 +85,36 @@ class AddClass(object):
                     field.widget.attrs['class'] = 'form-control'
             else:
                 field.widget.attrs['class'] = 'form-control'
+
+def excludeWhiteURLs(url):
+    for reg in settings.VALID_URL_LIST:
+        if re.match(reg, url):
+            return True
+
+def getAllURLs(url_list, url_dict, prefix, namespace=None):
+    '''
+    Get all the apps urls, except which one in white list setting in settings.py
+    :param url_list -- the url pattenrs provided by urls model
+    :param url_dict -- use for store the result
+    :param prefix -- prefix for splice url
+    '''
+    for entry in url_list:
+        if isinstance(entry, RegexURLPattern):
+            # Not include urls which did not define url name
+            if not entry.name:
+                continue
+
+            name = '{0}:{1}'.format(namespace, entry.name) if namespace else entry.name
+            url = prefix + entry.regex.pattern
+            url = url.replace('^', '').replace('$', '')
+
+            # Exclude some urls in white list
+            if excludeWhiteURLs(url):
+                continue
+            
+            url_dict[name] = {
+                'url_pattern_name': name,
+                'url': url
+            }
+        elif isinstance(entry, RegexURLResolver):
+            getAllURLs(entry.url_patterns, url_dict, prefix+entry.regex.pattern, entry.namespace)

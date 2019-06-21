@@ -1,0 +1,113 @@
+{% extends "rbac/base_permission.html" %}
+{% block head %}
+<script>
+    $(function () {
+        $("a.delete").click(function (e) {
+            var action = confirm("确认删除？");
+            if (action == false) {
+                e.preventDefault()
+            }
+        })
+    })
+</script>
+<style>
+  td {text-align: left;}
+</style>
+{% endblock %}
+{% block content %}
+  <form method="post" action="?type=add">
+    {% csrf_token %}
+    {{ formset_add.management_form }}
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <span><i class="icon icon-tag"></i> 待新增权限</span>
+        <button type="submit" class="btn btn-success btn-sm pull-right"><i class="icon icon-save"></i> 新增</button>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>序号</th>
+            <th>名称</th>
+            <th>URL</th>
+            <th>URL Name</th>
+            <th>所属菜单</th>
+            <th>关联的菜单</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for form in formset_add %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              {% for field in form %}
+                <td>{{ field }}</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </form>
+
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      <span><i class="icon icon-eye-open"></i> 待删除权限</span>
+      <a href="#" class="btn btn-danger btn-sm pull-right"><i class="icon icon-remove-sign"></i> 删除</a>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>名称</th>
+          <th>URL</th>
+          <th>URL Name</th>
+          <th>删除</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in delete_url_list %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.url }}</td>
+            <td>{{ item.url_pattern_name }}</td>
+            <td><a href="{% url 'rbac:delete_permission' item.id %}" class="delete"><i class="icon icon-trash"></i></a></td>
+          </td>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <form method="post" action="?type=update">
+    {% csrf_token %}
+    {{ formset_update.management_form }}
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <span><i class="icon icon-eye-close"></i> 可能更新的权限</span>
+        <button type="submit" class="btn btn-info btn-sm pull-right"><i class="icon icon-save"></i> 更新</button>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>序号</th>
+            <th>名称</th>
+            <th>URL</th>
+            <th>URL Name</th>
+            <th>所属菜单</th>
+            <th>关联的菜单</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for form in formset_update %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+                {% for field in form %}
+                  <td>{{ field }}</td>
+                {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </form>
+
+{% endblock %}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load customfilters %}
 {% block msg %}{% include "message.html" %}{% endblock %}
 {% block head %}
 <script>
@@ -14,15 +14,24 @@
 </script>
 {% endblock %}
 {% block content %}
-  <div class="btn-group">
-    <a class="btn" href="{% url 'ps_import' %}">批量导入</a>
-    <a class="btn" href="{% url 'ps_export' %}">导出数据</a>
-  </div>
+  {% with perm_edit=request|has_permission:'导入物理服务器列表' perm_delete=request|has_permission:'导出物理服务器列表' %}
+    {% if perm_edit or perm_delete %}
+      <div class="btn-group">
+        {% if perm_edit %}
+          <a class="btn" href="{% url 'ps_import' %}">批量导入</a>
+        {% endif %}
+        {% if perm_delete %}
+          <a class="btn" href="{% url 'ps_export' %}">导出数据</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endwith %}
   <div class="table-responsive">
     <table class="table table-hover table-bordered table-auto">
       <caption>物理服务器详细信息</caption>
       <thead>
         <tr>
+          <th>ID</th>
           <th>厂商</th>
           <th>型号</th>
           <th>序列号</th>
@@ -32,12 +41,15 @@
           <th>硬盘</th>
           <th>网卡数量</th>
           <th>备注</th>
-          <th>操作</th>
+          {% if request|has_permission:'修改物理服务器' or request|has_permission:'删除物理服务器' %}
+            <th>操作</th>
+          {% endif %}
         </tr>
       </thead>
       <tbody>
         {% for ps in ps_list %}
           <tr>
+            <td>{{ forloop.counter }}</td>
             <td>{{ ps.manufacturer }}</td>
             <td>{{ ps.model }}</td>
             <td>{{ ps.sn }}</td>
@@ -47,7 +59,18 @@
             <td>{{ ps.disk }}</td>
             <td>{{ ps.nic_num }}</td>
             <td>{{ ps.comment }}</td>
-            <td class="action"><a href="{% url 'edit_ps' ps.id %}" class="btn btn-info btn-sm">编辑</a> <a href="{% url 'del_ps' ps.id %}" class="delete btn btn-danger btn-sm">删除</a></td>
+	    {% with perm_edit=request|has_permission:'修改物理服务器' perm_delete=request|has_permission:'删除物理服务器' %}
+              {% if perm_edit or perm_delete %}
+                <td class="action">
+                  {% if perm_edit %}
+                    <a href="{% url 'edit_ps' ps.id %}" class="btn btn-info btn-sm">编辑</a>
+                  {% endif %}
+                  {% if perm_delete %}
+                    <a href="{% url 'del_ps' ps.id %}" class="delete btn btn-danger btn-sm">删除</a>
+                  {% endif %}
+                </td>
+              {% endif %}
+            {% endwith %}
           </tr>
         {% endfor %}   
       </tbody> 

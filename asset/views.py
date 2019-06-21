@@ -6,13 +6,13 @@ import xlrd
 from django.urls import reverse
 from cmdb.utils import validIPV4
 from django.contrib import messages
-from django.http import HttpResponse
 from permission import check_permission
 from rest_framework.response import Response
 from django.shortcuts import render, redirect
 from asset.serializers import AssetSerializer
 from models import IDC, PhysicalServer, Asset
-from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse, HttpResponse
 from rest_framework.exceptions import ValidationError
 from forms import IdcForm, PhysicalServerForm, AssetForm
 from rest_framework import status, viewsets, permissions
@@ -22,12 +22,10 @@ from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 
 # Create your views here.
 
-@check_permission
 def idc(request):
     idc_list = IDC.objects.all()
     return render(request, 'asset/idc.html', locals())
 
-@permission_required('asset.add_idc')
 def addIDC(request):
     if request.method == 'POST':
         form = IdcForm(request.POST)
@@ -43,7 +41,6 @@ def addIDC(request):
         form = IdcForm()
     return render(request, 'asset/add_idc.html', locals())
 
-@permission_required('asset.change_idc')
 def editIDC(request, pk):
     idc = IDC.objects.get(id=pk)
     if request.method == 'POST':
@@ -61,17 +58,14 @@ def editIDC(request, pk):
     form = IdcForm(instance=idc)
     return render(request, 'asset/edit_idc.html', locals())
 
-@permission_required('asset.delete_idc')
 def delIDC(request, pk):
     IDC.objects.get(id=pk).delete()
     return redirect(reverse('idc'))
 
-@check_permission
 def physical_server(request):
     ps_list = PhysicalServer.objects.all()
     return render(request, 'asset/physical_server.html', locals())
 
-@permission_required('asset.add_physicalserver')
 def addPS(request):
     if request.method == 'POST':
         form = PhysicalServerForm(request.POST)
@@ -84,7 +78,6 @@ def addPS(request):
         form = PhysicalServerForm()
     return render(request, 'asset/add_ps.html', locals())
 
-@permission_required('asset.change_physicalserver')
 def editPS(request, pk):
     ps = PhysicalServer.objects.get(id=pk)
     if request.method == 'POST':
@@ -103,7 +96,6 @@ def editPS(request, pk):
         form = PhysicalServerForm(instance=ps)
     return render(request, 'asset/edit_ps.html', locals())
 
-@permission_required('asset.delete_physicalserver')
 def delPS(request, pk):
     PhysicalServer.objects.get(id=pk).delete()
     return redirect(reverse('ps'))
@@ -191,7 +183,6 @@ def fenye(request, asset_list):
         assets = paginator_obj.page(paginator.num_pages)
     return assets, page_list
 
-@check_permission
 def listAsset(request):
     aname = request.GET.get('aname', '')
     atype = request.GET.get('atype', '')
@@ -241,7 +232,6 @@ def listAsset(request):
         flag = 1
     return render(request, 'asset/asset_list.html', locals())
     
-@permission_required('asset.add_asset')
 def addAsset(request):
     if request.method == 'POST':
         form = AssetForm(request.POST)
@@ -253,7 +243,6 @@ def addAsset(request):
         form = AssetForm()
     return render(request, 'asset/asset_add.html', locals())
 
-@permission_required('asset.change_asset')
 def editAsset(request, pk):
     asset = Asset.objects.get(id=pk)
     if request.method == 'POST':
@@ -280,12 +269,10 @@ def editAsset(request, pk):
         form = AssetForm(instance=asset)
     return render(request, 'asset/asset_edit.html', locals())
 
-@permission_required('asset.delete_asset')
 def delAsset(request, pk):
     Asset.objects.get(id=pk).delete()
     return redirect(reverse('list'))
 
-@check_permission
 def hostname(request):
     asset_list = Asset.objects.all()
     hostname_list = list()
@@ -365,10 +352,7 @@ class AssetViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def getObject(self, pk):
-        try:
-            return Asset.objects.get(pk=pk)
-        except Asset.DoesNotExist:
-            raise Http404
+        return get_object_or_404(Asset, pk=pk)
 
     def update(self, request, pk=None):
         asset = self.getObject(pk)

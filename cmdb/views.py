@@ -11,6 +11,7 @@ from django.conf import settings
 from django.db.models import Count
 from django.contrib import auth, messages
 from django.contrib.auth.models import User
+from rbac.models import MyUser, Role, Permission
 from asset.models import PhysicalServer, IDC, Asset
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, FileResponse, HttpResponseRedirect
@@ -22,6 +23,106 @@ def index(request):
     host_number = Asset.objects.aggregate(host_number=Count('asset_type'))['host_number']
     online_user = request.user.username
     return render(request, 'index.html', locals())
+
+def initPermission(request, user):
+    '''
+    获取登录用户的所有权限，并放入session
+    数据结构：menu_mapping = [
+                  {
+                   'nodes': [
+                       {
+                        'url': u'/', 
+                        'icon': u'icon-home', 
+                        'id': 9, 
+                        'title': u'首页'
+                       }
+                   ], 
+                   'icon': u'icon-home', 
+                   'title': u'首页'
+                  }, 
+                  {
+                   'nodes': [
+                       {
+                        'url': u'/asset/list/', 
+                        'icon': u'icon-info-sign', 
+                        'id': 1, 
+                        'title': u'服务器列表'
+                       }, 
+                       {
+                        'url': u'/asset/add/', 
+                        'icon': u'icon-edit-sign', 
+                        'id': 2, 'title': u'添加服务器'
+                       }
+                   ], 
+                   'icon': u'icon-server', 
+                   'title': u'资产管理'
+                  } 
+              ]
+              permission_mapping = {
+                  '服务器列表': {
+                      'url': u'/asset/list/', 
+                      'related_id': None, 
+                      'related_url': None, 
+                      'related_description': None
+                  },
+                  '编辑服务器': {
+                      'url': u'/asset/edit/(?P<pk>\\d+)/', 
+                      'related_id': 1, 
+                      'related_url': u'/asset/list/', 
+                      'related_description': '服务器列表'
+                  }
+              }
+    菜单顺序：父节点数据插入菜单表的顺序
+    '''
+    myuser = MyUser.objects.get(name__username=user)
+    permission_mapping = dict()
+    menu_mapping = dict()
+    permission_queryset = myuser.role.values(
+        'purview__id',
+        'purview__url',
+        'purview__description',
+        'purview__icon',
+        'purview__menu_id',
+        'purview__menu__title',
+        'purview__menu__icon',
+        'purview__related_id_id',
+        'purview__related_id__url',
+        'purview__related_id__description'
+    )
+    for item in permission_queryset:
+        permission_mapping[item['purview__description']] = {
+            'url': item['purview__url'],
+            'related_id': item['purview__related_id_id'],
+            'related_url': item['purview__related_id__url'],
+            'related_description': item['purview__related_id__description']
+        }
+        menu_id = item['purview__menu_id']
+        if menu_id is not None:
+            node = {
+                'id': item['purview__id'],
+                'title': item['purview__description'],
+                'url': item['purview__url'],
+                'icon': item['purview__icon']
+            }
+            if menu_id in menu_mapping:
+                menu_mapping[menu_id]['nodes'].append(node)
+            else:
+                title = item['purview__menu__title']
+                # 不在菜单中显示权限管理，而是在header nav 中显示
+                if title != u'权限管理':
+                    menu_mapping[menu_id] = {
+                        'title': title,
+                        'icon': item['purview__menu__icon'],
+                        'nodes': [
+                            node
+                        ]
+                    }
+    permission_menu_list = list()
+    for k, v in sorted(menu_mapping.iteritems(), key=lambda t: t[0]):
+        permission_menu_list.append(v) 
+    print(permission_mapping)
+    request.session[settings.PERMISSION_SESSION_KEY] = permission_mapping
+    request.session[settings.MENU_SESSION_KEY] = permission_menu_list
 
 def loginview(request):
     if request.method == 'POST':
@@ -46,6 +147,7 @@ def loginview(request):
                 return HttpResponseRedirect(reverse('loginview'))
             else:
                 auth.login(request, user)
+                initPermission(request, user)
                 return HttpResponseRedirect(reverse('index'))
     form = LoginForm()
     return render(request, 'registration/login.html', locals())

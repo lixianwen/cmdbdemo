@@ -20,6 +20,7 @@ python 2.7.5
 - Asset API
 - 使用Saltstack API 批量做一些工作
 - 使用Zabbix API 添加或删除主机
+- 基于RBAC 模型的权限组件
 
 #### 1. Asset
 主机管理部分为**机房**、**物理服务器**和**虚拟机**。信息使用表格展示，支持增删改查操作。支持批量导入、批量导出和下载。
@@ -30,7 +31,7 @@ python 2.7.5
 
 把`/path/to/cmdbdemo/salts/files` 里的内容拷贝到任何你想放置的地方，修改saltstack 的配置文件中的`file_roots` 和 `/path/to/cmdbdemo/cmdb/settings.py` 中的`MEDIA_ROOT`
 
-#### 3. zabbix
+#### 3. Zabbix
 使用Zabbix API 添加或删除主机  
 不支持添加代理主机，但是在`zabbixapi.py` 预留了接口  
 参考文档：[zabbix host interface](https://www.zabbix.com/documentation/3.4/zh/manual/api/reference/hostinterface)
@@ -52,3 +53,6 @@ In [76]: requests.get(url='http://192.168.0.125:8000/asset/api/1/', headers=head
 Out[76]: u'{"url":"http://192.168.0.125:8000/asset/api/1/","ip":"192.168.0.127","other_ip":"192.168.0.13","idc_name":"\u7a33\u901f\u6c55\u5c3e\u6570\u636e\u4e2d\u5fc31","hostname":"","cpu":"","memory":"","disk":"","system":"","status":"\u5df2\u4f7f\u7528","asset_type":"\u865a\u62df\u673a","env":"\u6d4b\u8bd5\u73af\u5883","belong_to":"192.168.0.20","comment":""}'
 ```
 也可以使用应用程序接口，而不是直接使用网络接口与API 进行交互。[参考文档](https://www.django-rest-framework.org/topics/api-clients/)
+
+#### 5. RBAC
+基于RBAC 模型开发的权限组件，用于整个项目实现权限管理、角色管理和菜单管理
