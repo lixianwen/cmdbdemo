@@ -14,13 +14,12 @@ class SaltAPI(object):
 
     def getToken(self):
         login_url = '{0}/login'.format(self.url)
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         dic = {
             'username': self.c.get('salt', 'user'),
             'password': self.c.get('salt', 'password'), 
             'eauth': self.c.get('salt', 'eauth')
         }
-        result = self.s.post(login_url, headers=headers, data=dic, verify=False).text
+        result = self.s.post(login_url, json=dic, verify=False).text
         return json.loads(result)['return'][0]['token']
 
     def header(self):
