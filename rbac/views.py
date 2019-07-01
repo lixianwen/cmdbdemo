@@ -7,9 +7,9 @@ from cmdb.utils import getAllURLs
 from django.conf import settings
 from django.forms import modelformset_factory
 from django.shortcuts import render, redirect
-from django.http import HttpResponseNotAllowed
 from models import Menu, Permission, Role, MyUser
 from django.utils.module_loading import import_string
+from django.views.decorators.http import require_POST
 from forms import AddMenuForm, SecondGradeMenuForm, PermissionForm, MultiPermissionForm, RoleForm
 
 # Create your views here.
@@ -31,13 +31,12 @@ def listMenu(request):
     permission_form = PermissionForm()
     return render(request, 'rbac/menu_list.html', locals())
 
+@require_POST
 def addMenu(request):
-    if request.method == 'POST':
-        form = AddMenuForm(request.POST)
-        if form.is_valid():
-            new_object = form.save()
-            return redirect(customReverse(request, 'rbac:list_menu'))
-    return HttpResponseNotAllowed(['POST'])
+    form = AddMenuForm(request.POST)
+    if form.is_valid():
+        new_object = form.save()
+        return redirect(customReverse(request, 'rbac:list_menu'))
 
 def editMenu(request, pk):
     menu = Menu.objects.get(id=pk)
@@ -79,15 +78,14 @@ def deleteSecondGradeMenu(request, pk):
     Permission.objects.get(id=pk).delete()
     return redirect(customReverse(request, 'rbac:list_menu'))
 
+@require_POST
 def addPermission(request, sid):
     second_grade_menu = Permission.objects.get(id=sid)
-    if request.method == 'POST':
-        form = PermissionForm(request.POST)
-        if form.is_valid():
-            form.instance.related_id = second_grade_menu
-            new_object = form.save()
-            return redirect(customReverse(request, 'rbac:list_menu'))
-    return HttpResponseNotAllowed(['POST'])
+    form = PermissionForm(request.POST)
+    if form.is_valid():
+        form.instance.related_id = second_grade_menu
+        new_object = form.save()
+        return redirect(customReverse(request, 'rbac:list_menu'))
 
 def editPermission(request, pk):
     perm = Permission.objects.get(id=pk)
