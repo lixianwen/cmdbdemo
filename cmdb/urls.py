@@ -19,6 +19,7 @@ from views import *
 from django.conf.urls import url
 from django.contrib import admin
 from django.conf.urls import include
+from django.views.static import serve
 from django.contrib.auth.views import login
 
 admin.autodiscover()
@@ -37,5 +38,8 @@ urlpatterns = [
     url(r'^password/$', verify_password, name='password'),
     url(r'^accounts/login/$', login),
     url(r'^tpl/(\w+.(xls|xlsx))$', tpl_download, name='tpl'),
-#    url(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^(?P<path>favicon.ico)/$', serve, {
+        'document_root': 'shared_static'
+    }),
 ]
