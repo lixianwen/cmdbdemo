@@ -5,11 +5,14 @@ import time
 from django.urls import reverse
 from cmdb.utils import getAllURLs
 from django.conf import settings
+from django.urls import reverse_lazy
+from django.views.generic import ListView
 from django.forms import modelformset_factory
 from django.shortcuts import render, redirect
 from models import Menu, Permission, Role, MyUser
 from django.utils.module_loading import import_string
 from django.views.decorators.http import require_POST
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from forms import AddMenuForm, SecondGradeMenuForm, PermissionForm, MultiPermissionForm, RoleForm
 
 # Create your views here.
@@ -162,33 +165,26 @@ def multiPermission(request):
 
     return render(request, 'rbac/operate_multi_permission.html', locals())
 
-def listRole(request):
-    role_list = Role.objects.all()
-    form = RoleForm()
-    return render(request, 'rbac/role_list.html', locals())
+class RoleList(ListView):
+    model = Role
 
-def addRole(request):
-    if request.method == 'POST':
-        form = RoleForm(request.POST)
-        if form.is_valid():
-            new_object = form.save()
-            return redirect(reverse('rbac:list_role'))
-    return HttpResponseNotAllowed(['POST'])
+    def get_context_data(self, **kwargs):
+        context = super(RoleList, self).get_context_data(**kwargs)
+        context['form'] = RoleForm()
+        return context
 
-def editRole(request, pk):
-    role = Role.objects.get(id=pk)
-    if request.method == 'POST':
-        form = RoleForm(request.POST, instance=role)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('rbac:list_role'))
-    else:
-        form = RoleForm(instance=role)
-    return render(request, 'rbac/edit.html', locals())
+class RoleCreate(CreateView):
+    model = Role
+    form_class = RoleForm
 
-def deleteRole(request, pk):
-    Role.objects.get(id=pk).delete()
-    return redirect(reverse('rbac:list_role'))
+class RoleUpdate(UpdateView):
+    model = Role
+    form_class = RoleForm
+    template_name = 'rbac/edit.html'
+
+class RoleDelete(DeleteView):
+    model = Role
+    success_url = reverse_lazy('rbac:list_role')
 
 def assignPermission(request):
     user_id = request.GET.get('uid')
