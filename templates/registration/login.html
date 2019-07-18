@@ -122,7 +122,6 @@
 </head>
 <body>
 {% include "message.html" %}
-{% load widget_tweaks %}
 <div class="container">
   <div class="panel panel-primary">
     <div class="panel-heading">
@@ -147,7 +146,7 @@
               <div class="form-group">
                 <label for="{{ field.id_for_label }}" class="col-sm-2 control-label">{{ field.label }}</label>
                 <div class="col-sm-6">
-                  {{ field|attr:"class:form-control" }}
+                  {{ field }}
                 </div>
                 <div class="col-sm-4">
                   <img src="{% url 'image' %}" alt="验证码" id="ImgVerifyCode"/>
@@ -157,7 +156,7 @@
               <div class="form-group">
                 <label for="{{ field.id_for_label }}" class="col-sm-2 control-label">{{ field.label }}</label>
                 <div class="col-md-6 col-sm-10">
-                  {{ field|attr:"class:form-control" }}
+                  {{ field }}
                   {% if field.errors %}
                     <div class="{% if field.errors %} help-block {% endif %}">
                       {% for error in field.errors %}
