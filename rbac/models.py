@@ -6,6 +6,10 @@ from django.db import models
 # Create your models here.
 
 class MyUser(models.Model):
+    '''
+    Name field should use OneToOneField instead of ForeignKey
+    And implementate custom User model's DDL
+    '''
     name = models.ForeignKey(
         'auth.User',
         limit_choices_to={'is_staff': True},
