@@ -7,8 +7,8 @@ from django.db import models
 
 class MyUser(models.Model):
     '''
-    Name field should use OneToOneField instead of ForeignKey
-    And implementate custom User model's DDL
+    It should use OneToOneField instead of ForeignKey to define name field
+    And implementate DDL for this model.
     '''
     name = models.ForeignKey(
         'auth.User',
