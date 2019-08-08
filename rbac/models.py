@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -11,7 +12,7 @@ class MyUser(models.Model):
     And implementate DDL for this model.
     '''
     name = models.ForeignKey(
-        'auth.User',
+        settings.AUTH_USER_MODEL,
         limit_choices_to={'is_staff': True},
         verbose_name=u'用户名'
     )
