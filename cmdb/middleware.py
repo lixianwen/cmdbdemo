@@ -6,8 +6,9 @@ import sys
 from django.urls import reverse
 from django.conf import settings
 from django.shortcuts import redirect
-from django.views.debug import technical_500_response
 from django.core.exceptions import PermissionDenied
+from django.views.debug import technical_500_response
+from django.contrib.auth.views import redirect_to_login
 
 class UserExceptionMiddleware(object):
     '''在生产模式下，普通用户看到的是正常的错误页面，管理员或者在 INTERNAL_IPS 的 ip能看到详细的异常信息'''
@@ -68,7 +69,7 @@ class RbacMiddleware(object):
             if isinstance(permission_mapping, dict) and not permission_mapping:
                 raise PermissionDenied
             elif not permission_mapping:
-                return redirect(reverse('loginview'))
+                return redirect_to_login(current_url)
             for description, item in permission_mapping.iteritems():
                 reg = r'^{0}$'.format(item['url'])
                 if re.match(reg, current_url):

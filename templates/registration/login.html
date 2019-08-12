@@ -130,6 +130,7 @@
     <div class="panel-body">
       <form method="post" action="" class="form-horizontal" role="form">
         {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next|default:'/' }}" />
         {% for field in form %}
           {% ifequal field.id_for_label "id_remember" %}
             <div class="form-group">

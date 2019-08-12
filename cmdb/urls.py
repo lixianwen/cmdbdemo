@@ -18,9 +18,10 @@ Including another URLconf
 from views import *
 from django.conf.urls import url
 from django.contrib import admin
+from views import CustomLoginView
 from django.conf.urls import include
 from django.views.static import serve
-from django.contrib.auth.views import login
+from django.contrib.auth.views import logout_then_login
 
 admin.autodiscover()
 
@@ -31,12 +32,11 @@ urlpatterns = [
     url(r'^zabbix/', include('zabbix.urls')),
     url(r'^permission/', include('rbac.urls', namespace='rbac')),
     url(r'^$', index, name='index'),
-    url(r'^login/$', loginview, name='loginview'),
-    url(r'^logout/$', logoutview, name='logoutview'),
+    url(r'login/$', CustomLoginView.as_view(), name='loginview'),
+    url(r'^logout/$', logout_then_login, name='logoutview'),
     url(r'^image/$', image, name='image'),
     url(r'^verify/$', verify, name='verify'),
     url(r'^password/$', verify_password, name='password'),
-    url(r'^accounts/login/$', login),
     url(r'^tpl/(\w+.(xls|xlsx))$', tpl_download, name='tpl'),
     url(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     url(r'^(?P<path>favicon.ico)/$', serve, {

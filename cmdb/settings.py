@@ -191,3 +191,5 @@ VALID_URL_LIST = [
 ]
 
 MENU_SESSION_KEY = 'menu_list'
+
+LOGIN_URL = 'loginview'

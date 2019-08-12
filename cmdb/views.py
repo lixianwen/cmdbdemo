@@ -9,8 +9,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.conf import settings
 from django.db.models import Count
-from django.contrib import auth, messages
-from django.contrib.auth.models import User
+from forms import CustomAuthenticationForm
+from django.contrib.auth.views import LoginView
 from rbac.models import MyUser, Role, Permission
 from asset.models import PhysicalServer, IDC, Asset
 from django.contrib.auth.decorators import login_required
@@ -24,7 +24,7 @@ def index(request):
     online_user = request.user.username
     return render(request, 'index.html', locals())
 
-def initPermission(request, user):
+def initPermission(request, user_obj):
     '''
     获取登录用户的所有权限，并放入session
     数据结构：menu_mapping = [
@@ -74,7 +74,7 @@ def initPermission(request, user):
               }
     菜单顺序：父节点数据插入菜单表的顺序
     '''
-    myuser = MyUser.objects.get(name__username=user)
+    myuser = MyUser.objects.get(name__username=user_obj)
     permission_mapping = dict()
     menu_mapping = dict()
     permission_queryset = myuser.role.values(
@@ -120,41 +120,16 @@ def initPermission(request, user):
     permission_menu_list = list()
     for k, v in sorted(menu_mapping.iteritems(), key=lambda t: t[0]):
         permission_menu_list.append(v) 
-    print(permission_mapping)
     request.session[settings.PERMISSION_SESSION_KEY] = permission_mapping
     request.session[settings.MENU_SESSION_KEY] = permission_menu_list
 
-def loginview(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            code = form.cleaned_data['verification_code']
-            text = request.session.get('verify_code', '')
-            if text != code:
-                error = '验证码错误，请重新登录'
-                messages.add_message(request, messages.ERROR, error)
-                return HttpResponseRedirect(reverse('loginview'))
-            user = auth.authenticate(username=username, password=password)
-            if not user:
-                error = 'Invalid user or incorrect password.'
-                messages.add_message(request, messages.ERROR, error)
-                return HttpResponseRedirect(reverse('loginview'))
-            elif not user.is_staff:
-                error = 'user {0} is not allow logged in.'.format(username)
-                messages.add_message(request, messages.ERROR, error)
-                return HttpResponseRedirect(reverse('loginview'))
-            else:
-                auth.login(request, user)
-                initPermission(request, user)
-                return HttpResponseRedirect(reverse('index'))
-    form = LoginForm()
-    return render(request, 'registration/login.html', locals())
+class CustomLoginView(LoginView):
+    authentication_form = CustomAuthenticationForm
 
-def logoutview(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('index'))
+    def form_valid(self, form):
+        # Initial permission map
+        initPermission(self.request, form.user_cache)
+        return super(CustomLoginView, self).form_valid(form)
 
 def image(request):
     verifyCode = VeifyCode()
