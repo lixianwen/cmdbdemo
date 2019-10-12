@@ -12,7 +12,7 @@ python 2.7.5
 **注意：salt-api 需要单独安装和配置**
 
 ### 配置文件
-`/path/to/cmdbdemo/cdb.conf`  
+`/path/to/cmdbdemo/cmdb.conf`  
 编辑文件设置服务相关的帐号密码  
 
 ### 项目组成
