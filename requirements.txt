@@ -2,7 +2,7 @@ Django==1.11.17
 django-oauth-toolkit==1.1.2
 djangorestframework==3.8.2
 oauthlib==2.1.0
-paramiko==2.4.1
+paramiko==2.10.1
 salt==2018.3.0
 Pillow>=8.1.1
 coreapi==2.3.3
